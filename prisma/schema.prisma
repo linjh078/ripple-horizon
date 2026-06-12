@@ -1,0 +1,151 @@
+// ============================================================================
+// RippleHorizon（观澜知远）— 数据库 Schema
+// Prisma v5 + SQLite（SQLite 不支持 enum，使用 String + 应用层约束）
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// 认证相关（Auth.js v5 兼容）
+// ============================================================================
+
+model User {
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           String    @default("STUDENT")   // STUDENT | TEACHER | ALUMNI
+  department     String?                         // 院系
+  bio            String?                         // 个人简介
+
+  accounts       Account[]
+  sessions       Session[]
+
+  posts          Post[]
+  comments       Comment[]
+  likes          Like[]
+  lifeEvents     LifeEvent[]
+  submittedSpots LifeSpot[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================================
+// 帖子
+// ============================================================================
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  category  String   // STUDY_RESOURCES | ONLINE_COURSES | WEBSITES | EXAM_PREP | CAREER_SKILLS | SOFTWARE_TIPS
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  likes     Like[]
+  likeCount Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// 评论
+// ============================================================================
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// 点赞
+// ============================================================================
+
+model Like {
+  id     String @id @default(uuid())
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+}
+
+// ============================================================================
+// 个人时间轴事件
+// ============================================================================
+
+model LifeEvent {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  eventDate DateTime
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// 校园周边
+// ============================================================================
+
+model LifeSpot {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  category      String   // FOOD | SHOP | SERVICE | ENTERTAINMENT
+  location      String?
+  imageUrl      String?
+  submittedById String
+  submittedBy   User     @relation(fields: [submittedById], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
