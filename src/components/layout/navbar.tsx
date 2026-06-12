@@ -1,0 +1,103 @@
+import Link from "next/link";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Home, Compass, Coffee, User, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export function Navbar() {
+  // TODO: Replace with real auth state from Auth.js
+  const isLoggedIn = false;
+  const user = null;
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+        {/* 左侧 Logo */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold text-lg text-primary hover:opacity-80 transition-opacity"
+        >
+          <span className="text-xl">🌊</span>
+          <span className="hidden sm:inline">观澜知远</span>
+        </Link>
+
+        {/* 中间导航 */}
+        <nav className="flex items-center gap-1">
+          <Link
+            href="/"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            <Home className="size-4" />
+            <span className="ml-1.5">首页</span>
+          </Link>
+          <Link
+            href="/posts"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            <Compass className="size-4" />
+            <span className="ml-1.5">发现</span>
+          </Link>
+          <Link
+            href="/life"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            <Coffee className="size-4" />
+            <span className="ml-1.5">生活</span>
+          </Link>
+        </nav>
+
+        {/* 右侧用户区 */}
+        <div className="flex items-center gap-2">
+          {isLoggedIn ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button variant="ghost" size="icon" className="rounded-full" />
+                }
+              >
+                <Avatar className="size-8">
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    {user?.name?.[0] || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                  render={<Link href="/space/me" className="cursor-pointer" />}
+                >
+                  <User className="size-4" />
+                  <span className="ml-2">我的空间</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <LogOut className="size-4" />
+                  <span className="ml-2 text-destructive">退出登录</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+              >
+                登录
+              </Link>
+              <Link
+                href="/register"
+                className={cn(buttonVariants({ size: "sm" }))}
+              >
+                注册
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}

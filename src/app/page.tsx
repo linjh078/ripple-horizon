@@ -1,65 +1,69 @@
-import Image from "next/image";
+import { NavCardGrid } from "@/components/home/nav-card-grid";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+      {/* Hero 区域 */}
+      <section className="mb-12 text-center sm:mb-16">
+        <div className="mx-auto mb-4 flex items-center justify-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5 text-sm text-muted-foreground w-fit">
+          <Sparkles className="size-3.5 text-primary" />
+          <span>广东石油化工学院知识分享平台</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          观澜知远
+        </h1>
+        <p className="mx-auto max-w-xl text-base text-muted-foreground sm:text-lg">
+          连接校园，共享智慧。在这里发现学习资源、优质课程、实用工具，
+          <br className="hidden sm:block" />
+          记录你的成长轨迹，与校友一起拓展视野。
+        </p>
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <Link
+            href="/posts"
+            className={cn(buttonVariants({ size: "default" }))}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            开始探索
+            <ArrowRight className="ml-1.5 size-4" />
+          </Link>
+          <Link
+            href="/register"
+            className={cn(buttonVariants({ variant: "outline" }))}
           >
-            Documentation
-          </a>
+            加入我们
+          </Link>
         </div>
-      </main>
+      </section>
+
+      {/* 导航卡片区域 */}
+      <section>
+        <div className="mb-6 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-foreground">探索频道</h2>
+          <span className="text-sm text-muted-foreground">
+            — 选择一个方向开始你的旅程
+          </span>
+        </div>
+        <NavCardGrid />
+      </section>
+
+      {/* 底部个人空间引导 */}
+      <section className="mt-16 rounded-xl border bg-card p-8 text-center">
+        <h3 className="mb-2 text-xl font-semibold">拥有你的个人空间</h3>
+        <p className="mb-4 text-muted-foreground">
+          建立个人主页，记录在校时间轴，分享你的成长故事与心得。
+          <br />
+          让每一次经历都成为他人前行的灯塔。
+        </p>
+        <Link
+          href="/register"
+          className={cn(buttonVariants({ variant: "outline" }))}
+        >
+          创建我的空间
+        </Link>
+      </section>
     </div>
   );
 }
