@@ -1,0 +1,7 @@
+# Netlify 部署配置
+[build]
+  command = "npx prisma generate && next build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
