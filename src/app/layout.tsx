@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,17 +35,19 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <Toaster position="top-center" richColors />
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <Toaster position="top-center" richColors />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

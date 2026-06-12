@@ -75,6 +75,22 @@
 
 ---
 
+## 决策 7：使用 Prisma v5（非 v7）
+
+**日期：** 2026-06-12
+**背景：** 最初安装 Prisma v7，但其新的 client engine 强制要求使用 driver adapter，在 Windows + SQLite 上出现兼容性问题（URL 解析、ESM/CJS 互操作等），经反复调试无法稳定运行。
+**结论：** 降级至 Prisma v5.22.0。
+**理由：**
+1. v5 原生支持 SQLite，不需要 adapter
+2. `new PrismaClient()` 开箱即用，无需额外配置
+3. 稳定可靠，社区资料丰富
+4. 生产环境切换到 PostgreSQL 成本低（改一行 provider）
+5. 对初学者友好，减少不必要的概念负担
+
+**影响：** 使用 `@prisma/client` 而非自定义生成路径；SQLite 不支持 enum，改用 String + 应用层约束。
+
+---
+
 ## 后续规划（按优先级排列）
 
 ### 🔵 Phase 2（MVP 完成后）

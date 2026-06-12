@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,13 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Home, Compass, Coffee, User, LogOut } from "lucide-react";
+import { Home, Compass, Coffee, User, LogOut, LogIn, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
-  // TODO: Replace with real auth state from Auth.js
-  const isLoggedIn = false;
-  const user = null;
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -54,7 +57,9 @@ export function Navbar() {
 
         {/* 右侧用户区 */}
         <div className="flex items-center gap-2">
-          {isLoggedIn ? (
+          {status === "loading" ? (
+            <div className="size-8 animate-pulse rounded-full bg-muted" />
+          ) : isLoggedIn ? (
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -69,14 +74,21 @@ export function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem
-                  render={<Link href="/space/me" className="cursor-pointer" />}
+                  render={
+                    <Link
+                      href={`/space/${user?.id}`}
+                      className="cursor-pointer"
+                    />
+                  }
                 >
                   <User className="size-4" />
                   <span className="ml-2">我的空间</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
                   <LogOut className="size-4" />
-                  <span className="ml-2 text-destructive">退出登录</span>
+                  <span className="ml-2">退出登录</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -86,13 +98,15 @@ export function Navbar() {
                 href="/login"
                 className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
               >
-                登录
+                <LogIn className="size-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">登录</span>
               </Link>
               <Link
                 href="/register"
                 className={cn(buttonVariants({ size: "sm" }))}
               >
-                注册
+                <UserPlus className="size-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">注册</span>
               </Link>
             </>
           )}
