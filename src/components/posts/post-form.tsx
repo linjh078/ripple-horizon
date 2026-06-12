@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +22,15 @@ const CATEGORIES = [
   { value: "CAREER_SKILLS", label: "职场技能" },
   { value: "SOFTWARE_TIPS", label: "软件技巧" },
 ];
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? "发布中..." : "发布"}
+    </Button>
+  );
+}
 
 export function PostForm() {
   return (
@@ -59,9 +69,7 @@ export function PostForm() {
           required
         />
       </div>
-      <Button type="submit" className="w-full">
-        发布
-      </Button>
+      <SubmitButton />
     </form>
   );
 }

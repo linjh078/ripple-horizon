@@ -1,8 +1,10 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { notFound } from "next/navigation";
+import { EventForm } from "@/components/space/event-form";
 
 const ROLE_LABELS: Record<string, string> = {
   STUDENT: "在校生",
@@ -16,6 +18,8 @@ export default async function SpacePage({
   params: Promise<{ userId: string }>;
 }) {
   const { userId } = await params;
+  const session = await auth();
+  const isOwner = session?.user?.id === userId;
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -60,7 +64,10 @@ export default async function SpacePage({
       <Separator className="mb-8" />
 
       {/* 时间轴 */}
-      <h2 className="text-xl font-bold mb-6">时间轴</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold">时间轴</h2>
+        {isOwner && <EventForm userId={user.id} />}
+      </div>
       {user.lifeEvents.length === 0 ? (
         <p className="text-muted-foreground text-sm">还没有人生事件</p>
       ) : (

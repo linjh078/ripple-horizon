@@ -55,12 +55,13 @@ export default function RegisterPage() {
       if (signInResult?.error) {
         // 注册成功但登录失败 — 跳转到登录页
         router.push("/login?registered=true");
-      } else {
-        router.push("/");
-        router.refresh();
+        return;
       }
+      router.push("/");
+      router.refresh();
     } catch {
       setError("注册失败，请稍后重试");
+    } finally {
       setLoading(false);
     }
   }
@@ -122,6 +123,8 @@ export default function RegisterPage() {
                 name="password"
                 type="password"
                 placeholder="至少 6 位字符"
+                minLength={6}
+                autoComplete="new-password"
                 required
               />
             </div>

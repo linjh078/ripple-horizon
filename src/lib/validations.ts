@@ -12,7 +12,7 @@ export const registerSchema = z
     password: z.string().min(6, "密码至少6个字符").max(100),
     confirmPassword: z.string(),
     role: z.enum(["STUDENT", "TEACHER", "ALUMNI"], {
-      errorMap: () => ({ message: "请选择身份" }),
+      message: "请选择身份",
     }),
     department: z.string().optional(),
   })

@@ -3,8 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { MapPin, Plus } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SpotForm } from "@/components/life/spot-form";
 
 const CATEGORIES = [
   { label: "全部", value: "" },
@@ -41,6 +42,11 @@ export default async function LifePage({
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">校园周边</h1>
+      </div>
+
+      {/* 添加地点 */}
+      <div className="mb-6">
+        <SpotForm />
       </div>
 
       {/* 分类筛选 */}

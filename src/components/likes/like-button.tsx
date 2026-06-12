@@ -36,9 +36,9 @@ export function LikeButton({ postId, initialCount }: LikeButtonProps) {
       // 以服务器返回的实际状态为准
       setLiked(data.liked);
     } catch {
-      // 回滚
+      // 回滚：乐观+1就回滚-1，乐观-1就回滚+1
       setLiked((prev) => !prev);
-      setCount((prev) => (liked ? prev + 1 : prev - 1));
+      setCount((prev) => (prev > initialCount ? prev - 1 : prev + 1));
       toast.error("操作失败，请重试");
     } finally {
       setLoading(false);

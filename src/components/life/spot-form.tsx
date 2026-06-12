@@ -1,0 +1,105 @@
+"use client";
+
+import { useState } from "react";
+import { useFormStatus } from "react-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useSession } from "next-auth/react";
+import { createLifeSpot } from "@/lib/actions/life";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+const CATEGORIES = [
+  { value: "FOOD", label: "美食" },
+  { value: "SHOP", label: "购物" },
+  { value: "SERVICE", label: "生活服务" },
+  { value: "ENTERTAINMENT", label: "休闲娱乐" },
+];
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? "添加中..." : "添加"}
+    </Button>
+  );
+}
+
+export function SpotForm() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [showForm, setShowForm] = useState(false);
+
+  if (!session) {
+    return (
+      <Button onClick={() => router.push("/login")} size="sm">
+        登录后分享地点
+      </Button>
+    );
+  }
+
+  if (!showForm) {
+    return (
+      <Button onClick={() => setShowForm(true)} size="sm">
+        分享地点
+      </Button>
+    );
+  }
+
+  async function handleAction(formData: FormData) {
+    const result = await createLifeSpot(formData);
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("地点添加成功！");
+      setShowForm(false);
+    }
+  }
+
+  return (
+    <form action={handleAction} className="space-y-4 rounded-lg border p-4">
+      <div className="space-y-2">
+        <Label htmlFor="spot-name">名称</Label>
+        <Input id="spot-name" name="name" placeholder="店铺/地点名称" required maxLength={50} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="spot-category">分类</Label>
+        <Select name="category" required>
+          <SelectTrigger>
+            <SelectValue placeholder="选择分类" />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORIES.map((c) => (
+              <SelectItem key={c.value} value={c.value}>
+                {c.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="spot-description">描述</Label>
+        <Textarea id="spot-description" name="description" placeholder="介绍一下这个地点..." rows={3} required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="spot-location">位置（选填）</Label>
+        <Input id="spot-location" name="location" placeholder="如：学校北门对面小巷内50米" />
+      </div>
+      <div className="flex gap-2">
+        <SubmitButton />
+        <Button type="button" variant="ghost" onClick={() => setShowForm(false)} className="flex-1">
+          取消
+        </Button>
+      </div>
+    </form>
+  );
+}

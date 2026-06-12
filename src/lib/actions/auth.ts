@@ -50,6 +50,8 @@ export async function registerUser(formData: FormData) {
   return { success: true };
 }
 
+// ⚠️ 备用 Server Action：当前客户端登录使用 next-auth/react 的 signIn，
+// 此函数保留以备后续需要服务端登录的场景。
 export async function loginUser(formData: FormData) {
   try {
     await signIn("credentials", {

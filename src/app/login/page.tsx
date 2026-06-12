@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +36,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError("邮箱或密码错误");
       } else {
-        router.push("/");
+        const callbackUrl = searchParams.get("callbackUrl");
+        router.push(callbackUrl || "/");
         router.refresh();
       }
     } catch {
@@ -60,6 +62,7 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 placeholder="your@email.com"
+                autoComplete="email"
                 required
               />
             </div>
@@ -70,6 +73,7 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 placeholder="请输入密码"
+                autoComplete="current-password"
                 required
               />
             </div>
