@@ -4,7 +4,6 @@ import { PostCard } from "@/components/posts/post-card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PostCategory } from "@prisma/client";
 
 const CATEGORIES: { label: string; value: string }[] = [
   { label: "全部", value: "" },
