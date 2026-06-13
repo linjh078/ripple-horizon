@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { notFound } from "next/navigation";
 import { EventForm } from "@/components/space/event-form";
 import { DeleteEventButton } from "@/components/space/delete-event-button";
+import { ProfileEditor } from "@/components/space/profile-editor";
 
 const ROLE_LABELS: Record<string, string> = {
   STUDENT: "在校生",
@@ -89,6 +90,18 @@ export default async function SpacePage({
           ))}
         </div>
       )}
+
+      {/* 个人介绍 / 留言板 */}
+      <section className="my-8">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4">
+          {isOwner ? "你的个人介绍" : "TA 的留言"}
+        </h3>
+        <ProfileEditor
+          department={user.department}
+          bio={user.bio}
+          isOwner={isOwner}
+        />
+      </section>
 
       {/* 最近的帖子 */}
       {user.posts.length > 0 && (

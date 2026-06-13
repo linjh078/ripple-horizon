@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ExploreButton() {
@@ -20,6 +20,34 @@ export function ExploreButton() {
       开始探索
       <ArrowRight className="ml-1.5 size-4" />
     </a>
+  );
+}
+
+export function MissionButton() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        <Heart className="mr-1.5 size-4 text-red-500" />
+        网站初心
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Heart className="size-5 text-red-500" />
+              网站初心
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-base leading-relaxed text-foreground/80">
+              这是在学校的最后一段空闲时光，我想再多做几个项目。后来觉得要是有人能在大一时带带我，我现在应该也是半个技术大佬了吧。于是两个想法一拍即合，构建一个信息分享网站的项目，淋过雨，现在可以为后面的人撑伞，顺便锻炼一下自己做实际项目的能力。
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-xs text-muted-foreground text-center">
+            （后续还会补充更多内容，敬请期待）
+          </p>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

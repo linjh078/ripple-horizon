@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Globe } from "lucide-react";
 import { PositionForm } from "@/components/companies/position-form";
+import { PositionCard } from "@/components/companies/position-card";
 
 export default async function CompanyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -38,18 +38,16 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
       ) : (
         <div className="space-y-4">
           {company.positions.map((pos) => (
-            <Card key={pos.id}>
-              <CardContent className="pt-6">
-                <h3 className="font-semibold text-lg">{pos.title}</h3>
-                <p className="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">{pos.description}</p>
-                {pos.requirements && (
-                  <div className="mt-3 rounded-md bg-muted p-3">
-                    <p className="text-xs font-semibold mb-1">技能要求：</p>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{pos.requirements}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <PositionCard
+              key={pos.id}
+              position={{
+                id: pos.id,
+                title: pos.title,
+                description: pos.description,
+                requirements: pos.requirements,
+                companyId: company.id,
+              }}
+            />
           ))}
         </div>
       )}
