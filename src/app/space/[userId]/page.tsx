@@ -91,11 +91,8 @@ export default async function SpacePage({
         </div>
       )}
 
-      {/* 个人介绍 / 留言板 */}
+      {/* 个人介绍 + 留言板 */}
       <section className="my-8">
-        <h3 className="text-sm font-semibold text-muted-foreground mb-4">
-          {isOwner ? "你的个人介绍" : "TA 的留言"}
-        </h3>
         <ProfileEditor
           department={user.department}
           bio={user.bio}
