@@ -64,6 +64,15 @@ export default async function PostDetailPage({
         </p>
       </div>
 
+      {/* 图片 */}
+      {post.imageUrls && (
+        <div className="flex flex-wrap gap-3 mb-6">
+          {JSON.parse(post.imageUrls).map((url: string, i: number) => (
+            <img key={i} src={url} alt="" className="max-w-full rounded-lg border object-cover" style={{ maxHeight: "400px" }} />
+          ))}
+        </div>
+      )}
+
       {/* 点赞 */}
       <div className="mb-6">
         <LikeButton postId={post.id} initialCount={post.likeCount} />

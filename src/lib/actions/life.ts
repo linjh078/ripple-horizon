@@ -69,6 +69,7 @@ export async function createLifeEvent(formData: FormData) {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const eventDate = formData.get("eventDate") as string;
+  const imageUrls = (formData.get("imageUrls") as string) || null;
 
   if (!title || !content || !eventDate) {
     return { error: "请填写完整的事件信息" };
@@ -84,6 +85,7 @@ export async function createLifeEvent(formData: FormData) {
         title,
         content,
         eventDate: new Date(eventDate),
+        imageUrls,
         userId: session.user.id,
       },
     });

@@ -48,6 +48,7 @@ export async function uploadMaterial(formData: FormData) {
       },
     });
     revalidatePath(`/courses/${subjectId}`);
+    revalidatePath("/courses");
     return { success: true };
   } catch {
     return { error: "上传失败，请稍后重试" };

@@ -35,7 +35,11 @@ export async function POST(
           data: { likeCount: { decrement: 1 } },
         });
       }
-      return NextResponse.json({ liked: false });
+      const finalPost = await prisma.post.findUnique({
+        where: { id: postId },
+        select: { likeCount: true },
+      });
+      return NextResponse.json({ liked: false, likeCount: finalPost?.likeCount ?? 0 });
     } else {
       // 添加点赞
       await prisma.like.create({ data: { postId, userId } });
@@ -43,12 +47,38 @@ export async function POST(
         where: { id: postId },
         data: { likeCount: { increment: 1 } },
       });
-      return NextResponse.json({ liked: true });
+      const finalPost = await prisma.post.findUnique({
+        where: { id: postId },
+        select: { likeCount: true },
+      });
+      return NextResponse.json({ liked: true, likeCount: finalPost?.likeCount ?? 0 });
     }
   } catch {
     return NextResponse.json(
       { error: "操作失败，请稍后重试" },
       { status: 500 }
     );
+  }
+}
+
+// GET /api/posts/[id]/likes — 查询当前用户是否已点赞
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: postId } = await params;
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ liked: false });
+    }
+
+    const existing = await prisma.like.findUnique({
+      where: { postId_userId: { postId, userId: session.user.id } },
+    });
+
+    return NextResponse.json({ liked: !!existing });
+  } catch {
+    return NextResponse.json({ liked: false });
   }
 }

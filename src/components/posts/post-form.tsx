@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ImageUpload } from "@/components/shared/image-upload";
 import { createPost } from "@/lib/actions/posts";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   { value: "STUDY_RESOURCES", label: "学习资源" },
@@ -33,8 +36,18 @@ function SubmitButton() {
 }
 
 export function PostForm() {
+  const [images, setImages] = useState<string[]>([]);
+
+  async function handleAction(formData: FormData) {
+    formData.append("imageUrls", JSON.stringify(images));
+    const result = await createPost(formData);
+    if (result?.error) {
+      toast.error(result.error);
+    }
+  }
+
   return (
-    <form action={createPost} className="space-y-5">
+    <form action={handleAction} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="title">标题</Label>
         <Input
@@ -69,6 +82,7 @@ export function PostForm() {
           required
         />
       </div>
+      <ImageUpload images={images} onChange={setImages} />
       <SubmitButton />
     </form>
   );

@@ -86,6 +86,13 @@ export default async function SpacePage({
               <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap break-words">
                 {event.content}
               </p>
+              {event.imageUrls && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {JSON.parse(event.imageUrls).map((url: string, i: number) => (
+                    <img key={i} src={url} alt="" className="size-20 object-cover rounded-md border" />
+                  ))}
+                </div>
+              )}
               {isOwner && <DeleteEventButton eventId={event.id} />}
             </div>
           ))}

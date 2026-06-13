@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
@@ -17,6 +17,22 @@ export function LikeButton({ postId, initialCount }: LikeButtonProps) {
   const [count, setCount] = useState(initialCount);
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  // 初始化：查询当前用户是否已点赞
+  useEffect(() => {
+    if (!session?.user?.id) {
+      setChecked(true);
+      return;
+    }
+    fetch(`/api/posts/${postId}/likes`)
+      .then((r) => r.json())
+      .then((data) => {
+        setLiked(data.liked);
+        setChecked(true);
+      })
+      .catch(() => setChecked(true));
+  }, [postId, session?.user?.id]);
 
   async function toggleLike() {
     if (!session) {
@@ -25,8 +41,9 @@ export function LikeButton({ postId, initialCount }: LikeButtonProps) {
     }
 
     // 乐观更新
-    setLiked((prev) => !prev);
-    setCount((prev) => (liked ? prev - 1 : prev + 1));
+    const wasLiked = liked;
+    setLiked(!wasLiked);
+    setCount((prev) => (wasLiked ? prev - 1 : prev + 1));
     setLoading(true);
 
     try {
@@ -35,10 +52,11 @@ export function LikeButton({ postId, initialCount }: LikeButtonProps) {
       const data = await res.json();
       // 以服务器返回的实际状态为准
       setLiked(data.liked);
+      setCount(data.likeCount);
     } catch {
-      // 回滚：乐观+1就回滚-1，乐观-1就回滚+1
-      setLiked((prev) => !prev);
-      setCount((prev) => (prev > initialCount ? prev - 1 : prev + 1));
+      // 回滚乐观更新
+      setLiked(wasLiked);
+      setCount((prev) => (wasLiked ? prev + 1 : prev - 1));
       toast.error("操作失败，请重试");
     } finally {
       setLoading(false);
@@ -50,7 +68,7 @@ export function LikeButton({ postId, initialCount }: LikeButtonProps) {
       variant="ghost"
       size="sm"
       onClick={toggleLike}
-      disabled={loading}
+      disabled={loading || !checked}
       className={cn("gap-1.5", liked && "text-red-500 hover:text-red-600")}
     >
       <Heart className={cn("size-4", liked && "fill-current")} />

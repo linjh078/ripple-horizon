@@ -13,6 +13,9 @@ interface ImageUploadProps {
 export function ImageUpload({ images, onChange }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  // 用 ref 跟踪最新 images，避免快速连传时的闭包竞态
+  const imagesRef = useRef(images);
+  imagesRef.current = images;
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -30,7 +33,8 @@ export function ImageUpload({ images, onChange }: ImageUploadProps) {
         return;
       }
       const data = await res.json();
-      onChange([...images, data.url]);
+      // 使用 ref 确保拿到最新列表，避免竞态丢失
+      onChange([...imagesRef.current, data.url]);
       toast.success("图片上传成功");
     } catch {
       toast.error("上传失败，请重试");

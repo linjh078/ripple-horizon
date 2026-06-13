@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUpload } from "@/components/shared/image-upload";
 import { createLifeEvent } from "@/lib/actions/life";
 import { toast } from "sonner";
 
@@ -20,6 +21,7 @@ function SubmitButton() {
 
 export function EventForm({ userId }: { userId: string }) {
   const [showForm, setShowForm] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
   if (!showForm) {
     return (
@@ -29,13 +31,20 @@ export function EventForm({ userId }: { userId: string }) {
     );
   }
 
+  function handleCancel() {
+    setShowForm(false);
+    setImages([]);
+  }
+
   async function handleAction(formData: FormData) {
+    formData.append("imageUrls", JSON.stringify(images));
     const result = await createLifeEvent(formData);
     if (result?.error) {
       toast.error(result.error);
     } else {
       toast.success("事件添加成功！");
       setShowForm(false);
+      setImages([]);
     }
   }
 
@@ -53,9 +62,10 @@ export function EventForm({ userId }: { userId: string }) {
         <Label htmlFor="event-content">内容</Label>
         <Textarea id="event-content" name="content" placeholder="描述这段经历..." rows={3} required />
       </div>
+      <ImageUpload images={images} onChange={setImages} />
       <div className="flex gap-2">
         <SubmitButton />
-        <Button type="button" variant="ghost" onClick={() => setShowForm(false)} className="flex-1">
+        <Button type="button" variant="ghost" onClick={handleCancel} className="flex-1">
           取消
         </Button>
       </div>

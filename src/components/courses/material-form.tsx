@@ -39,7 +39,7 @@ export function MaterialForm({ subjectId }: { subjectId: string }) {
       <div className="space-y-1"><Label htmlFor="m-title">标题</Label><Input id="m-title" name="title" placeholder="资料标题" required /></div>
       <div className="space-y-1"><Label htmlFor="m-content">内容</Label><Textarea id="m-content" name="content" placeholder="资料内容或说明..." rows={4} required /></div>
       <ImageUpload images={images} onChange={setImages} />
-      <div className="flex gap-2"><SubmitButton /><Button type="button" variant="ghost" size="sm" onClick={() => setShow(false)}>取消</Button></div>
+      <div className="flex gap-2"><SubmitButton /><Button type="button" variant="ghost" size="sm" onClick={() => { setShow(false); setImages([]); }}>取消</Button></div>
     </form>
   );
 }

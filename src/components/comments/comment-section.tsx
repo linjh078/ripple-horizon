@@ -27,8 +27,12 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
   useEffect(() => {
     fetch(`/api/posts/${postId}/comments`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("加载失败");
+        return r.json();
+      })
       .then(setComments)
+      .catch(() => setComments([]))
       .finally(() => setFetching(false));
   }, [postId]);
 
