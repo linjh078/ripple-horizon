@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { notFound } from "next/navigation";
 import { EventForm } from "@/components/space/event-form";
+import { DeleteEventButton } from "@/components/space/delete-event-button";
 
 const ROLE_LABELS: Record<string, string> = {
   STUDENT: "在校生",
@@ -73,16 +74,17 @@ export default async function SpacePage({
       ) : (
         <div className="relative border-l-2 border-muted ml-3 pl-8 space-y-8">
           {user.lifeEvents.map((event) => (
-            <div key={event.id} className="relative">
+            <div key={event.id} className="relative overflow-hidden min-w-0 pr-8">
               {/* 时间轴圆点 */}
               <div className="absolute -left-[35px] size-3 rounded-full border-2 border-primary bg-background mt-1.5" />
               <time className="text-xs text-muted-foreground">
                 {new Date(event.eventDate).toLocaleDateString("zh-CN")}
               </time>
-              <h3 className="font-semibold mt-1">{event.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
+              <h3 className="font-semibold mt-1 break-words">{event.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap break-words">
                 {event.content}
               </p>
+              {isOwner && <DeleteEventButton eventId={event.id} />}
             </div>
           ))}
         </div>

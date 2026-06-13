@@ -1,8 +1,6 @@
 import { NavCardGrid } from "@/components/home/nav-card-grid";
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ExploreButton, JoinButton, SpaceButton } from "@/components/home/home-actions";
+import { Sparkles } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -22,19 +20,8 @@ export default function HomePage() {
           记录你的成长轨迹，与校友一起拓展视野。
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
-          <Link
-            href="/posts"
-            className={cn(buttonVariants({ size: "default" }))}
-          >
-            开始探索
-            <ArrowRight className="ml-1.5 size-4" />
-          </Link>
-          <Link
-            href="/register"
-            className={cn(buttonVariants({ variant: "outline" }))}
-          >
-            加入我们
-          </Link>
+          <ExploreButton />
+          <JoinButton />
         </div>
       </section>
 
@@ -57,12 +44,7 @@ export default function HomePage() {
           <br />
           让每一次经历都成为他人前行的灯塔。
         </p>
-        <Link
-          href="/register"
-          className={cn(buttonVariants({ variant: "outline" }))}
-        >
-          创建我的空间
-        </Link>
+        <SpaceButton />
       </section>
     </div>
   );

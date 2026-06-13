@@ -8,7 +8,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -35,6 +35,8 @@ model User {
   likes          Like[]
   lifeEvents     LifeEvent[]
   submittedSpots LifeSpot[]
+  subjects       Subject[]
+  materials      SubjectMaterial[]
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -74,6 +76,7 @@ model Post {
   title     String
   content   String
   category  String   // STUDY_RESOURCES | ONLINE_COURSES | WEBSITES | EXAM_PREP | CAREER_SKILLS | SOFTWARE_TIPS
+  imageUrls String?  // JSON 数组存储图片 URL
   authorId  String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments  Comment[]
@@ -124,6 +127,7 @@ model LifeEvent {
   id        String   @id @default(uuid())
   title     String
   content   String
+  imageUrls String?  // JSON 数组存储图片 URL
   eventDate DateTime
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -148,4 +152,64 @@ model LifeSpot {
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+// ============================================================================
+// 课程资源
+// ============================================================================
+
+model Subject {
+  id          String            @id @default(uuid())
+  name        String
+  department  String?
+  description String?
+  authorId    String
+  author      User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  materials   SubjectMaterial[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model SubjectMaterial {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  imageUrls String?  // JSON 数组存储图片 URL
+  subjectId String
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// 企业需求
+// ============================================================================
+
+model Company {
+  id          String     @id @default(uuid())
+  name        String
+  industry    String?
+  description String
+  location    String?
+  website     String?
+  positions   Position[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Position {
+  id           String   @id @default(uuid())
+  title        String
+  description  String
+  requirements String?
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

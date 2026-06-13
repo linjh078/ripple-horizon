@@ -44,6 +44,22 @@ export async function createLifeSpot(formData: FormData) {
   }
 }
 
+export async function deleteLifeEvent(eventId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "请先登录" };
+  try {
+    const event = await prisma.lifeEvent.findUnique({ where: { id: eventId } });
+    if (!event || event.userId !== session.user.id) {
+      return { error: "无权删除此事件" };
+    }
+    await prisma.lifeEvent.delete({ where: { id: eventId } });
+    revalidatePath(`/space/${session.user.id}`);
+    return { success: true };
+  } catch {
+    return { error: "删除失败，请稍后重试" };
+  }
+}
+
 export async function createLifeEvent(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Home, Compass, Coffee, User, LogOut, LogIn, UserPlus } from "lucide-react";
+import { Home, Compass, Coffee, User, LogOut, LogIn, UserPlus, Library, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -45,6 +45,20 @@ export function Navbar() {
           >
             <Compass className="size-4" />
             <span className="ml-1.5">发现</span>
+          </Link>
+          <Link
+            href="/courses"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            <Library className="size-4" />
+            <span className="ml-1.5 hidden sm:inline">课程</span>
+          </Link>
+          <Link
+            href="/companies"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            <Building2 className="size-4" />
+            <span className="ml-1.5 hidden sm:inline">企业</span>
           </Link>
           <Link
             href="/life"
