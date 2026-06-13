@@ -24,8 +24,9 @@ model User {
   image          String?
   hashedPassword String?
   role           String    @default("STUDENT")   // STUDENT | TEACHER | ALUMNI
-  department     String?                         // 院系
-  bio            String?                         // 个人简介
+  department     String?                         // 院系（必填，注册时选填）
+  major          String?                         // 专业+班级，如"电子22-2"
+  bio            String?                         // 留言板（给来访者的话）
 
   accounts       Account[]
   sessions       Session[]

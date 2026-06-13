@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Pencil, User, MessageSquare } from "lucide-react";
-import { updateProfile } from "@/lib/actions/users";
+import { updateProfile, updateBio } from "@/lib/actions/users";
 import { toast } from "sonner";
 
 function SubmitButton({ label }: { label: string }) {
@@ -22,24 +22,38 @@ function SubmitButton({ label }: { label: string }) {
 
 interface Props {
   department: string | null;
+  major: string | null;
   bio: string | null;
   isOwner: boolean;
 }
 
-export function ProfileEditor({ department, bio, isOwner }: Props) {
+export function ProfileEditor({ department, major, bio, isOwner }: Props) {
   const [editingIntro, setEditingIntro] = useState(false);
   const [editingMessage, setEditingMessage] = useState(false);
 
-  async function handleAction(formData: FormData) {
+  // ====== 个人介绍表单 ======
+  async function handleIntroAction(formData: FormData) {
     const result = await updateProfile(formData);
     if (result?.error) {
       toast.error(result.error);
     } else {
-      toast.success("已更新！");
+      toast.success("个人介绍已更新！");
       setEditingIntro(false);
+    }
+  }
+
+  // ====== 留言板表单 ======
+  async function handleBioAction(formData: FormData) {
+    const result = await updateBio(formData);
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("留言已更新！");
       setEditingMessage(false);
     }
   }
+
+  const hasIntro = department || major;
 
   return (
     <div className="space-y-6">
@@ -47,22 +61,34 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <User className="size-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-muted-foreground">
-            个人介绍
-          </h3>
+          <h3 className="text-sm font-semibold text-muted-foreground">个人介绍</h3>
         </div>
 
-        {/* 编辑模式 */}
         {editingIntro ? (
-          <form action={handleAction} className="rounded-lg border bg-card p-4 space-y-3">
+          <form action={handleIntroAction} className="rounded-lg border bg-card p-4 space-y-3">
             <div className="space-y-1.5">
-              <Label htmlFor="pe-department">院系 / 身份</Label>
+              <Label htmlFor="pe-department">
+                院系 <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="pe-department"
                 name="department"
                 defaultValue={department || ""}
-                placeholder="例如：化学工程学院，2020届毕业生，目前在深圳从事新能源研发工作"
+                placeholder="例如：化学工程学院"
+                required
               />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pe-major">专业 + 班级</Label>
+              <Input
+                id="pe-major"
+                name="major"
+                defaultValue={major || ""}
+                placeholder="例如：电子22-2"
+              />
+              <p className="text-xs text-muted-foreground">
+                班级里已经包含届数，不需要单独写"2020届"
+              </p>
             </div>
             <div className="flex gap-2">
               <SubmitButton label="保存" />
@@ -71,8 +97,7 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
               </Button>
             </div>
           </form>
-        ) : department ? (
-          /* 有内容的展示模式 */
+        ) : hasIntro ? (
           <div className="group rounded-lg border bg-card p-4 relative">
             {isOwner && (
               <Button
@@ -84,13 +109,14 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
                 <Pencil className="size-3.5" />
               </Button>
             )}
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">{department}</p>
+            <p className="text-sm leading-relaxed">
+              {[department, major].filter(Boolean).join(" · ")}
+            </p>
           </div>
         ) : isOwner ? (
-          /* 空内容 + 本人 */
           <div className="text-center py-4 rounded-lg border border-dashed bg-muted/30">
             <p className="text-sm text-muted-foreground mb-3">
-              介绍一下你的院系、身份和去向
+              填写你的院系和专业班级，让大家认识你
             </p>
             <Button variant="outline" size="sm" onClick={() => setEditingIntro(true)}>
               <Pencil className="size-3.5 mr-1.5" />
@@ -98,25 +124,21 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
             </Button>
           </div>
         ) : (
-          /* 空内容 + 非本人 → 不显示 */
           <p className="text-sm text-muted-foreground">TA 还没有填写个人介绍</p>
         )}
       </section>
 
       <Separator />
 
-      {/* ====== 留言板 ====== */}
+      {/* ====== 留言板（完全独立） ====== */}
       <section>
         <div className="flex items-center gap-2 mb-3">
           <MessageSquare className="size-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-muted-foreground">
-            留言板
-          </h3>
+          <h3 className="text-sm font-semibold text-muted-foreground">留言板</h3>
         </div>
 
-        {/* 编辑模式 */}
         {editingMessage ? (
-          <form action={handleAction} className="rounded-lg border bg-card p-4 space-y-3">
+          <form action={handleBioAction} className="rounded-lg border bg-card p-4 space-y-3">
             <div className="space-y-1.5">
               <Label htmlFor="pe-bio">给来访者的话</Label>
               <Textarea
@@ -135,7 +157,6 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
             </div>
           </form>
         ) : bio ? (
-          /* 有内容的展示模式 */
           <div className="group rounded-lg border bg-card p-4 relative">
             {isOwner && (
               <Button
@@ -150,10 +171,9 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
             <p className="text-sm leading-relaxed whitespace-pre-wrap">{bio}</p>
           </div>
         ) : isOwner ? (
-          /* 空内容 + 本人 */
           <div className="text-center py-4 rounded-lg border border-dashed bg-muted/30">
             <p className="text-sm text-muted-foreground mb-3">
-              给来访者留下一些话或建议吧
+              给来访者留下一些话或建议
             </p>
             <Button variant="outline" size="sm" onClick={() => setEditingMessage(true)}>
               <Pencil className="size-3.5 mr-1.5" />
@@ -161,7 +181,6 @@ export function ProfileEditor({ department, bio, isOwner }: Props) {
             </Button>
           </div>
         ) : (
-          /* 空内容 + 非本人 */
           <p className="text-sm text-muted-foreground">TA 还没有留言</p>
         )}
       </section>

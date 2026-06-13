@@ -68,7 +68,7 @@ export function ParallaxHero({ children }: { children: React.ReactNode }) {
         ref={containerRef}
         className={cn(
           "fixed inset-0 z-0 overflow-hidden transition-all duration-1000 ease-in-out",
-          explored ? "opacity-[0.12]" : "opacity-100"
+          explored ? "opacity-[0.22]" : "opacity-100"
         )}
         aria-hidden="true"
       >

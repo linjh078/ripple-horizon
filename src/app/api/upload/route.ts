@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 // POST /api/upload — 上传图片（需登录）
@@ -30,7 +30,11 @@ export async function POST(req: NextRequest) {
 
     const ext = file.name.split(".").pop() || "jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const filepath = path.join(process.cwd(), "public", "uploads", filename);
+    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    const filepath = path.join(uploadsDir, filename);
+
+    // 确保目录存在（服务器首次部署时可能没有）
+    await mkdir(uploadsDir, { recursive: true });
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);

@@ -52,10 +52,11 @@ export default async function SpacePage({
             <h1 className="text-2xl font-bold">{user.name}</h1>
             <Badge variant="secondary">{ROLE_LABELS[user.role] || user.role}</Badge>
           </div>
-          {user.department && (
-            <p className="text-sm text-muted-foreground">{user.department}</p>
+          {[user.department, user.major].filter(Boolean).length > 0 && (
+            <p className="text-sm text-muted-foreground">
+              {[user.department, user.major].filter(Boolean).join(" · ")}
+            </p>
           )}
-          {user.bio && <p className="mt-2 text-sm">{user.bio}</p>}
           <p className="mt-1 text-xs text-muted-foreground">
             加入于 {new Date(user.createdAt).toLocaleDateString("zh-CN")} ·{" "}
             {user._count.posts} 篇分享
@@ -95,6 +96,7 @@ export default async function SpacePage({
       <section className="my-8">
         <ProfileEditor
           department={user.department}
+          major={user.major}
           bio={user.bio}
           isOwner={isOwner}
         />
