@@ -27,6 +27,19 @@ const VIDEO_URL =
 export function CinematicHero({ children }: { children: React.ReactNode }) {
   const prefersReduced = useReducedMotion();
   const [missionOpen, setMissionOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // 强制触发视频播放（解决 hydration 后 autoPlay 失效）
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const play = video.play();
+    if (play !== undefined) {
+      play.catch(() => {
+        // 浏览器拦截自动播放，静默忽略（muted 通常不会被拦）
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -35,8 +48,9 @@ export function CinematicHero({ children }: { children: React.ReactNode }) {
         {/* 视频加载前黑色兜底 */}
         <div className="absolute inset-0 bg-black" />
 
-        {/* 全屏视频 */}
+        {/* 全屏视频 — 优先本地文件，回退 CDN */}
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
@@ -44,6 +58,7 @@ export function CinematicHero({ children }: { children: React.ReactNode }) {
           preload="auto"
           className="absolute inset-0 h-full w-full object-cover"
         >
+          <source src="/videos/hero.mp4" type="video/mp4" />
           <source src={VIDEO_URL} type="video/mp4" />
         </video>
 
