@@ -39,7 +39,7 @@ export function LocalNav() {
       transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
       className="fixed top-[30px] inset-x-0 z-50"
     >
-      <div className="relative mx-auto max-w-4xl flex items-center px-4 sm:px-6">
+      <div className="mx-auto max-w-4xl grid grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
         {/* 左侧 Logo */}
         <Link
           href="/"
@@ -49,8 +49,8 @@ export function LocalNav() {
           🌊 观澜知远
         </Link>
 
-        {/* 中间导航链接组 — liquid-glass pill，绝对居中 */}
-        <nav className="hidden md:flex items-center gap-1 liquid-glass rounded-full px-2 py-1.5 absolute left-1/2 -translate-x-1/2">
+        {/* 中间导航链接组 — liquid-glass pill，grid 真居中 */}
+        <nav className="hidden md:flex items-center gap-1 liquid-glass rounded-full px-2 py-1.5">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -63,7 +63,7 @@ export function LocalNav() {
         </nav>
 
         {/* 右侧用户区 */}
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2 justify-end">
           {status === "loading" ? (
             <div className="size-8 animate-pulse rounded-full bg-white/10" />
           ) : isLoggedIn ? (

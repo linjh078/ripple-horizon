@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/** 视频播放到 45% 时跳转——卫星第一次近景 */
+const JUMP_AT = 0.45;
+
 /**
  * ExploreIntroVideo — 探索频道自动播放视频开场
  *
- * 进入页面后自动播放 earth.mp4 一次，播放完毕后
- * 标题淡出、导航卡片丝滑淡入。视频继续作为背景循环。
+ * 进入页面后自动播放 earth.mp4，到达卫星近景（45%）时定格，
+ * 标题淡出、导航卡片丝滑淡入。定格帧作为背景替代白色。
  */
 export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -15,15 +18,15 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<"loading" | "playing" | "complete">("loading");
   const hasPlayedOnce = useRef(false);
   const phaseRef = useRef(phase);
-  phaseRef.current = phase; // 保持 ref 同步，避免 effect 循环
+  phaseRef.current = phase;
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // 自动播放视频 — 依赖 mounted 确保 video 元素已挂载
+  // 自动播放视频 — 到达 JUMP_AT 时定格
   useEffect(() => {
-    if (!mounted) return; // 视频尚未挂载
+    if (!mounted) return;
     const video = videoRef.current;
     if (!video || hasPlayedOnce.current) return;
 
@@ -45,24 +48,26 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
       });
     };
 
-    // 如果视频已经可以播放，立即开始
+    // 时间检查：到达卫星近景时跳转
+    const handleTimeUpdate = () => {
+      if (phaseRef.current !== "playing") return;
+      if (video.duration && video.currentTime >= video.duration * JUMP_AT) {
+        video.pause(); // 定格在这一帧
+        setPhase("complete");
+      }
+    };
+
     if (video.readyState >= 2) {
       handleCanPlay();
     } else {
       video.addEventListener("canplay", handleCanPlay);
     }
-
-    const handleEnded = () => {
-      setPhase("complete");
-      video.loop = true;
-      video.play().catch(() => {});
-    };
-    video.addEventListener("ended", handleEnded);
+    video.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
       clearTimeout(timeout);
       video.removeEventListener("canplay", handleCanPlay);
-      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, [mounted]);
 
@@ -78,7 +83,7 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {/* ====== 视频背景 — 固定全屏 ====== */}
+      {/* ====== 视频背景 — 固定全屏，定格后作静态背景 ====== */}
       <div className="fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div className="absolute inset-0 bg-black" />
         <video
@@ -90,21 +95,21 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
         >
           <source src="/videos/earth.mp4" type="video/mp4" />
         </video>
-        {/* 暗色叠加 — 视频阶段更深，内容阶段浅一点 */}
+        {/* 播放中：暗色叠加让标题可读；定格后：更浅叠加露出视频帧 */}
         <div
           className={`absolute inset-0 transition-colors duration-1000 ${
-            phase === "complete" ? "bg-black/40" : "bg-black/30"
+            phase === "complete" ? "bg-black/15" : "bg-black/30"
           }`}
         />
       </div>
 
-      {/* ====== 开场标题遮罩 — 视频播完后淡出 ====== */}
+      {/* ====== 开场标题遮罩 — 定格后淡出 ====== */}
       <AnimatePresence>
         {phase !== "complete" && (
           <motion.div
             key="intro"
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center"
           >
             <motion.div
@@ -130,7 +135,6 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
               </p>
             </motion.div>
 
-            {/* 加载/播放中指示器 */}
             {phase === "loading" && (
               <div className="absolute bottom-12 flex items-center gap-1.5">
                 <div className="size-1.5 rounded-full bg-white/60 animate-pulse" />
@@ -141,7 +145,7 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* ====== 内容区 — 视频播完后丝滑淡入 ====== */}
+      {/* ====== 内容区 — 定格后丝滑淡入，视频帧作背景 ====== */}
       <AnimatePresence>
         {phase === "complete" && (
           <motion.div
@@ -149,10 +153,10 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative z-10"
+            className="relative z-10 min-h-screen"
           >
-            {/* 半透明背景 — 视频透出但不影响文字可读性 */}
-            <div className="bg-background/92 backdrop-blur-sm">
+            {/* 极浅玻璃层 — 视频帧透出，文字可读 */}
+            <div className="bg-black/10 backdrop-blur-[2px] min-h-screen">
               <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
                 {children}
               </div>

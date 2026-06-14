@@ -63,6 +63,18 @@ export function CinematicHero() {
 
       {/* ====== Hero 内容区 ====== */}
       <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center">
+        {/* 徽章 — 在标题上方 */}
+        <motion.div
+          initial={prefersReduced ? {} : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+          className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm px-4 py-1.5 text-sm text-white"
+          style={{ textShadow: "0 1px 4px rgb(0 0 0 / 0.4)" }}
+        >
+          <Sparkles className="size-3.5 text-amber-400" />
+          <span>广东石油化工学院知识分享平台</span>
+        </motion.div>
+
         {/* 标题 — BlurText 逐词动画，白色悬浮 */}
         <BlurText
           text="观澜知远"
@@ -79,15 +91,6 @@ export function CinematicHero() {
           transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
           className="max-w-lg w-full space-y-4"
         >
-          {/* 徽章 */}
-          <div
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-sm text-white"
-            style={{ textShadow: "0 1px 4px rgb(0 0 0 / 0.4)" }}
-          >
-            <Sparkles className="size-3.5 text-amber-400" />
-            <span>广东石油化工学院知识分享平台</span>
-          </div>
-
           {/* 副标题小字 */}
           <p
             className="text-base tracking-widest text-white/85"
