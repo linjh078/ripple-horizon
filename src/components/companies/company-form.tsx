@@ -30,6 +30,8 @@ export function CompanyForm() {
   const [open, setOpen] = useState(false);
 
   if (!session) return <Button size="sm" onClick={() => router.push("/login")}>登录后创建企业</Button>;
+  const role = (session.user as { role?: string }).role;
+  if (role !== "HR" && role !== "ADMIN") return null; // 仅 HR 和管理员可见
 
   async function handleAction(formData: FormData) {
     const result = await createCompany(formData);

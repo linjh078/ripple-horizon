@@ -11,7 +11,7 @@ export const registerSchema = z
     email: z.string().email("请输入有效邮箱"),
     password: z.string().min(6, "密码至少6个字符").max(100),
     confirmPassword: z.string(),
-    role: z.enum(["STUDENT", "TEACHER", "ALUMNI"], {
+    role: z.enum(["STUDENT", "TEACHER", "ALUMNI", "HR"], {
       message: "请选择身份",
     }),
     department: z.string().optional(),

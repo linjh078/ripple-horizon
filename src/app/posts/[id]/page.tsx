@@ -31,19 +31,28 @@ export default async function PostDetailPage({
 
   if (!post) notFound();
 
+  // 根据帖子分类智能返回对应的列表页
+  const backMap: Record<string, { href: string; label: string }> = {
+    EXAM_PREP: { href: "/exams", label: "返回考试升学" },
+    ONLINE_COURSES: { href: "/resources", label: "返回信息共享" },
+    WEBSITES: { href: "/resources", label: "返回信息共享" },
+    SOFTWARE_TIPS: { href: "/resources", label: "返回信息共享" },
+  };
+  const back = backMap[post.category] || { href: "/posts", label: "返回列表" };
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
       {/* 返回按钮 + 删除 */}
       <div className="flex items-center justify-between mb-4">
         <Link
-          href="/posts"
+          href={back.href}
           className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
         >
           <ArrowLeft className="size-4" />
-          <span className="ml-1.5">返回列表</span>
+          <span className="ml-1.5">{back.label}</span>
         </Link>
         {currentUserId === post.author.id && (
-          <DeleteButton action={deletePost} itemId={post.id} itemLabel={post.title} redirectTo="/posts" />
+          <DeleteButton action={deletePost} itemId={post.id} itemLabel={post.title} redirectTo={back.href} />
         )}
       </div>
 

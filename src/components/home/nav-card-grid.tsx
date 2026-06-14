@@ -28,8 +28,8 @@ const cards = [
   },
   {
     icon: Target,
-    title: "考试备考",
-    description: "考研、考公、考证、留学等考试经验与资料交流",
+    title: "考试升学",
+    description: "考研、考公、考证、留学等升学经验与资料交流",
     href: "/exams",
     color: "text-red-600",
     bgColor: "bg-red-50 dark:bg-red-950/30",

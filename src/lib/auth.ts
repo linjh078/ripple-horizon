@@ -48,7 +48,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           email: user.email,
           image: user.image,
-        };
+          role: user.role, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any;
       },
     }),
   ],
@@ -56,12 +57,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        (session.user as { role?: string }).role = token.role as string | undefined;
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        token.role = (user as { role?: string }).role;
       }
       return token;
     },

@@ -30,7 +30,7 @@ export default async function ExamsPage({ searchParams }: { searchParams: Promis
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <BackButton />
       <div className="flex items-center justify-between mb-6">
-        <div><h1 className="text-2xl font-bold">考试备考</h1><p className="text-muted-foreground text-sm mt-1">考研·考公·考证·留学经验分享与资料交流</p></div>
+        <div><h1 className="text-2xl font-bold">考试升学</h1><p className="text-muted-foreground text-sm mt-1">考研·考公·考证·留学等升学经验分享与资料交流</p></div>
         <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">发帖</span></Link>
       </div>
       <div className="mb-6 flex flex-wrap gap-2">

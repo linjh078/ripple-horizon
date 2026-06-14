@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { canDelete, canEdit } from "@/lib/permissions";
+import { canDelete, canEdit, canManageCompanies, canManagePositions, canEditPosition } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
 
 // ─── 企业 ───────────────────────────────────────────────
@@ -10,6 +10,7 @@ import { revalidatePath } from "next/cache";
 export async function createCompany(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "请先登录" };
+  if (!(await canManageCompanies())) return { error: "仅 HR 和管理员可以创建企业" };
 
   const name = formData.get("name") as string;
   const industry = (formData.get("industry") as string) || null;
@@ -89,6 +90,7 @@ export async function updateCompany(formData: FormData) {
 export async function createPosition(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "请先登录" };
+  if (!(await canManagePositions())) return { error: "仅 HR 和管理员可以发布职位" };
 
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
@@ -112,6 +114,8 @@ export async function createPosition(formData: FormData) {
 export async function deletePosition(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "请先登录" };
+  if (!(await canManagePositions())) return { error: "仅 HR 和管理员可以删除职位" };
+
   const id = formData.get("id") as string;
   const companyId = formData.get("companyId") as string;
   if (!id) return { error: "缺少职位 ID" };
@@ -119,13 +123,9 @@ export async function deletePosition(formData: FormData) {
   try {
     const position = await prisma.position.findUnique({ where: { id } });
     if (!position) return { error: "职位不存在" };
-    if (!position.creatorId) return { error: "该职位无创建者信息，无法删除" };
-    if (!(await canDelete(position.creatorId))) return { error: "无权删除此职位" };
 
     await prisma.position.delete({ where: { id } });
-    if (companyId) {
-      revalidatePath(`/companies/${companyId}`);
-    }
+    if (companyId) revalidatePath(`/companies/${companyId}`);
     revalidatePath("/companies");
     return { success: true };
   } catch (e) {
@@ -137,16 +137,15 @@ export async function deletePosition(formData: FormData) {
 export async function updatePosition(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "请先登录" };
+  if (!(await canEditPosition())) return { error: "仅 HR 可以修改职位信息" };
+
   const id = formData.get("id") as string;
   const companyId = formData.get("companyId") as string;
-
   if (!id || !companyId) return { error: "缺少职位或企业 ID" };
 
   try {
     const position = await prisma.position.findUnique({ where: { id } });
     if (!position) return { error: "职位不存在" };
-    if (!position.creatorId) return { error: "该职位无创建者信息，无法修改" };
-    if (!(await canEdit(position.creatorId))) return { error: "无权修改此职位" };
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;

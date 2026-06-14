@@ -22,6 +22,7 @@ const ROLES = [
   { value: "STUDENT", label: "在校生" },
   { value: "TEACHER", label: "教师" },
   { value: "ALUMNI", label: "校友" },
+  { value: "HR", label: "企业HR" },
 ];
 
 export default function RegisterPage() {

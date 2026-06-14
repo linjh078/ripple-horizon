@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +30,10 @@ interface PositionData {
 }
 
 export function PositionCard({ position }: { position: PositionData }) {
+  const { data: session } = useSession();
+  const role = (session?.user as { role?: string })?.role;
+  const canEdit = role === "HR";
+  const canDelete = role === "HR" || role === "ADMIN";
   const [editing, setEditing] = useState(false);
 
   async function handleEdit(formData: FormData) {
@@ -116,25 +121,31 @@ export function PositionCard({ position }: { position: PositionData }) {
               </div>
             )}
           </div>
-          {/* 操作按钮 */}
-          <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              onClick={() => setEditing(true)}
-            >
-              <Pencil className="size-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 text-destructive hover:text-destructive"
-              onClick={handleDelete}
-            >
-              <Trash2 className="size-3.5" />
-            </Button>
-          </div>
+          {/* 操作按钮：编辑仅 HR，删除 HR/Admin */}
+          {(canEdit || canDelete) && (
+            <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              {canEdit && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => setEditing(true)}
+                >
+                  <Pencil className="size-3.5" />
+                </Button>
+              )}
+              {canDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 text-destructive hover:text-destructive"
+                  onClick={handleDelete}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

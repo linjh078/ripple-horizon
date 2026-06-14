@@ -30,6 +30,8 @@ export function PositionForm({ companyId }: { companyId: string }) {
   const [open, setOpen] = useState(false);
 
   if (!session) return <Button size="sm" variant="outline" onClick={() => router.push("/login")}>登录后发布</Button>;
+  const role = (session.user as { role?: string }).role;
+  if (role !== "HR" && role !== "ADMIN") return null; // 仅 HR 和管理员可见
 
   async function handleAction(formData: FormData) {
     formData.append("companyId", companyId);

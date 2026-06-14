@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Calendar, Clock } from "lucide-react";
@@ -64,7 +65,9 @@ export default async function OfflinePage() {
             <Card key={event.id} className="hover:shadow-sm transition-shadow relative">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-lg">{event.title}</h3>
+                  <Link href={`/offline/${event.id}`} className="hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-lg">{event.title}</h3>
+                  </Link>
                   <Badge variant="outline" className={CATEGORY_COLORS[event.category] || ""}>
                     {event.category}
                   </Badge>

@@ -10,6 +10,18 @@ import { registerSchema } from "@/lib/validations";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 
+/** 根据身份生成唯一编号：A=管理员, H=HR, T=教师, U=学生/校友 */
+async function generateUserNumber(role: string): Promise<string> {
+  const prefix = role === "ADMIN" ? "A" : role === "HR" ? "H" : role === "TEACHER" ? "T" : "U";
+  const last = await prisma.user.findFirst({
+    where: { userNumber: { startsWith: prefix } },
+    orderBy: { userNumber: "desc" },
+    select: { userNumber: true },
+  });
+  const next = last?.userNumber ? parseInt(last.userNumber.slice(1), 10) + 1 : 1;
+  return `${prefix}${String(next).padStart(5, "0")}`;
+}
+
 export async function registerUser(formData: FormData) {
   // 1. 解析 + 验证输入
   const raw = {
@@ -34,8 +46,9 @@ export async function registerUser(formData: FormData) {
     return { error: "该邮箱已被注册" };
   }
 
-  // 3. 哈希密码并创建用户
+  // 3. 哈希密码并创建用户（自动分配编号）
   const hashedPassword = await bcrypt.hash(password, 10);
+  const userNumber = await generateUserNumber(role);
 
   await prisma.user.create({
     data: {
@@ -44,6 +57,7 @@ export async function registerUser(formData: FormData) {
       hashedPassword,
       role,
       department,
+      userNumber,
     },
   });
 
