@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { SubjectCard } from "@/components/courses/subject-card";
 import { SubjectForm } from "@/components/courses/subject-form";
+import { BackButton } from "@/components/shared/back-button";
 
 export default async function CoursesPage() {
   const subjects = await prisma.subject.findMany({
@@ -10,6 +11,7 @@ export default async function CoursesPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <BackButton />
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-2xl font-bold">课程资源</h1>
       </div>

@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 
 const SUB_CATEGORIES = [
   { label: "全部", value: "" },
@@ -27,6 +28,7 @@ export default async function ExamsPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <BackButton />
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold">考试备考</h1><p className="text-muted-foreground text-sm mt-1">考研·考公·考证·留学经验分享与资料交流</p></div>
         <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">发帖</span></Link>

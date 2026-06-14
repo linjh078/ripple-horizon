@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 
 const CATEGORIES = [
   { label: "全部", value: "" },
@@ -27,6 +28,7 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <BackButton />
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold">信息共享</h1><p className="text-muted-foreground text-sm mt-1">优质课程、实用网站、软件技巧分享</p></div>
         <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">发布</span></Link>

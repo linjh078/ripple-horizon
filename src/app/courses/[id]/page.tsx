@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MaterialForm } from "@/components/courses/material-form";
+import { BackButton } from "@/components/shared/back-button";
 
 export default async function SubjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,6 +19,7 @@ export default async function SubjectPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+      <BackButton href="/courses" label="返回课程资源" />
       <div className="mb-6">
         <h1 className="text-2xl font-bold">{subject.name}</h1>
         {subject.department && <Badge variant="outline" className="mt-1">{subject.department}</Badge>}

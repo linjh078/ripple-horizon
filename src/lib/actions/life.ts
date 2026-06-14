@@ -1,7 +1,7 @@
 "use server";
 
 // ============================================================================
-// 校园周边 + 人生事件 Server Actions
+// 校园周边 + 人生事件 + 线下活动 Server Actions
 // ============================================================================
 
 import { auth } from "@/lib/auth";
@@ -93,5 +93,43 @@ export async function createLifeEvent(formData: FormData) {
     return { success: true };
   } catch {
     return { error: "添加失败，请稍后重试" };
+  }
+}
+
+export async function createOfflineEvent(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: "请先登录" };
+  }
+
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const eventDate = formData.get("eventDate") as string;
+  const location = (formData.get("location") as string) || null;
+  const category = (formData.get("category") as string) || "沙龙";
+
+  if (!title || !description || !eventDate) {
+    return { error: "请填写标题、描述和时间" };
+  }
+
+  if (title.length > 50) {
+    return { error: "标题不能超过50个字符" };
+  }
+
+  try {
+    await prisma.offlineEvent.create({
+      data: {
+        title,
+        description,
+        eventDate: new Date(eventDate),
+        location,
+        category,
+        authorId: session.user.id,
+      },
+    });
+    revalidatePath("/offline");
+    return { success: true };
+  } catch {
+    return { error: "发布失败，请稍后重试" };
   }
 }

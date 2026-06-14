@@ -13,6 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useSession } from "next-auth/react";
 import { createLifeSpot } from "@/lib/actions/life";
 import { useRouter } from "next/navigation";
@@ -34,23 +41,16 @@ function SubmitButton() {
   );
 }
 
+/** 校园周边地点表单 —— Dialog 弹窗模式 */
 export function SpotForm() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [showForm, setShowForm] = useState(false);
+  const [open, setOpen] = useState(false);
 
   if (!session) {
     return (
       <Button onClick={() => router.push("/login")} size="sm">
         登录后分享地点
-      </Button>
-    );
-  }
-
-  if (!showForm) {
-    return (
-      <Button onClick={() => setShowForm(true)} size="sm">
-        分享地点
       </Button>
     );
   }
@@ -61,45 +61,51 @@ export function SpotForm() {
       toast.error(result.error);
     } else {
       toast.success("地点添加成功！");
-      setShowForm(false);
+      setOpen(false);
     }
   }
 
   return (
-    <form action={handleAction} className="space-y-4 rounded-lg border p-4">
-      <div className="space-y-2">
-        <Label htmlFor="spot-name">名称</Label>
-        <Input id="spot-name" name="name" placeholder="店铺/地点名称" required maxLength={50} />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="spot-category">分类</Label>
-        <Select name="category" required>
-          <SelectTrigger>
-            <SelectValue placeholder="选择分类" />
-          </SelectTrigger>
-          <SelectContent>
-            {CATEGORIES.map((c) => (
-              <SelectItem key={c.value} value={c.value}>
-                {c.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="spot-description">描述</Label>
-        <Textarea id="spot-description" name="description" placeholder="介绍一下这个地点..." rows={3} required />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="spot-location">位置（选填）</Label>
-        <Input id="spot-location" name="location" placeholder="如：学校北门对面小巷内50米" />
-      </div>
-      <div className="flex gap-2">
-        <SubmitButton />
-        <Button type="button" variant="ghost" onClick={() => setShowForm(false)} className="flex-1">
-          取消
-        </Button>
-      </div>
-    </form>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        render={
+          <Button size="sm">分享地点</Button>
+        }
+      />
+
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>分享地点</DialogTitle>
+        </DialogHeader>
+        <form action={handleAction} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="spot-name">名称</Label>
+            <Input id="spot-name" name="name" placeholder="店铺/地点名称" required maxLength={50} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="spot-category">分类</Label>
+            <Select name="category" required>
+              <SelectTrigger id="spot-category">
+                <SelectValue placeholder="选择分类" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="spot-description">描述</Label>
+            <Textarea id="spot-description" name="description" placeholder="介绍一下这个地点..." rows={3} required />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="spot-location">位置（选填）</Label>
+            <Input id="spot-location" name="location" placeholder="如：学校北门对面小巷内50米" />
+          </div>
+          <SubmitButton />
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

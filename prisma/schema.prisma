@@ -36,6 +36,7 @@ model User {
   likes          Like[]
   lifeEvents     LifeEvent[]
   submittedSpots LifeSpot[]
+  offlineEvents  OfflineEvent[]
   subjects       Subject[]
   materials      SubjectMaterial[]
 
@@ -213,4 +214,22 @@ model Position {
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ============================================================================
+// 线下活动
+// ============================================================================
+
+model OfflineEvent {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  location    String?
+  eventDate   DateTime
+  category    String   @default("沙龙") // 沙龙 | 分享会 | 学习小组 | 其他
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

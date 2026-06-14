@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { StudentCard } from "@/components/students/student-card";
+import { BackButton } from "@/components/shared/back-button";
 
 export default async function StudentsPage() {
   const students = await prisma.user.findMany({
@@ -10,6 +11,7 @@ export default async function StudentsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <BackButton />
       <h1 className="text-2xl font-bold mb-2">在校生</h1>
       <p className="text-muted-foreground mb-6">浏览在校同学的主页，了解彼此的学习历程</p>
       {students.length === 0 ? (
