@@ -72,26 +72,26 @@ export function CinematicHero() {
           style={{ textShadow: "0 4px 40px rgb(0 0 0 / 0.6)" }}
         />
 
-        {/* 浅色玻璃卡片 — 承载黑字内容 */}
+        {/* 轻透玻璃卡片 — 不挡风景，黑字清晰 */}
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
-          className="bg-white/85 backdrop-blur-xl rounded-2xl shadow-2xl px-6 py-8 sm:px-10 sm:py-10 max-w-lg w-full"
+          className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 px-6 py-8 sm:px-10 sm:py-10 max-w-lg w-full"
         >
           {/* 徽章 */}
-          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-black/5 px-3 py-1 text-sm text-black/70">
+          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white/40 px-3 py-1 text-sm text-black/80">
             <Sparkles className="size-3.5 text-amber-500" />
             <span>广东石油化工学院知识分享平台</span>
           </div>
 
           {/* 副标题小字 */}
-          <p className="mb-1 text-base text-black/60 tracking-widest">
+          <p className="mb-1 text-base text-black/80 tracking-widest">
             观往来之澜，知山河之远
           </p>
 
           {/* 描述 — 无间距 */}
-          <p className="text-sm text-black/55 leading-relaxed">
+          <p className="text-sm text-black/70 leading-relaxed">
             连接校园，共享智慧
             <br />
             记录你的成长轨迹，与校友一起拓展视野
@@ -109,7 +109,7 @@ export function CinematicHero() {
 
             <button
               onClick={() => setJoinOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-black border border-black/15 shadow-sm transition-all hover:bg-gray-50 hover:scale-105 active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-white/60 backdrop-blur-sm px-7 py-3 text-sm font-medium text-black border border-black/10 shadow-sm transition-all hover:bg-white/80 hover:scale-105 active:scale-95 cursor-pointer"
             >
               发现作者
               <ArrowRight className="size-4" />
@@ -119,7 +119,7 @@ export function CinematicHero() {
           {/* 网站初心 */}
           <button
             onClick={() => setMissionOpen(true)}
-            className="mt-4 inline-flex items-center gap-1 text-xs text-black/45 hover:text-black/70 transition-colors cursor-pointer"
+            className="mt-4 inline-flex items-center gap-1 text-xs text-black/50 hover:text-black/80 transition-colors cursor-pointer"
           >
             <Heart className="size-3 text-red-500" />
             网站初心

@@ -39,7 +39,7 @@ export function LocalNav() {
       transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
       className="fixed top-[30px] inset-x-0 z-50"
     >
-      <div className="mx-auto max-w-5xl flex items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto max-w-4xl flex items-center justify-between px-4 sm:px-6">
         {/* 左侧 Logo */}
         <Link
           href="/"
