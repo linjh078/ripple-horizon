@@ -45,7 +45,7 @@ const cards = [
   {
     icon: MapPin,
     title: "线下空间",
-    description: "校园周边生活信息分享，发现好吃好玩好去处",
+    description: "校园自由空间——沙龙、公开分享、线下活动，在这里发布时间、地点与活动信息",
     href: "/life",
     color: "text-orange-600",
     bgColor: "bg-orange-50 dark:bg-orange-950/30",

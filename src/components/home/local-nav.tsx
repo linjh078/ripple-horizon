@@ -39,7 +39,7 @@ export function LocalNav() {
       transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
       className="fixed top-[30px] inset-x-0 z-50"
     >
-      <div className="mx-auto max-w-5xl flex items-center gap-4 px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl flex items-center justify-between px-4 sm:px-6">
         {/* 左侧 Logo */}
         <Link
           href="/"
@@ -63,7 +63,7 @@ export function LocalNav() {
         </nav>
 
         {/* 右侧用户区 */}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2">
           {status === "loading" ? (
             <div className="size-8 animate-pulse rounded-full bg-white/10" />
           ) : isLoggedIn ? (

@@ -20,9 +20,7 @@ const VIDEO_URL =
 /**
  * CinematicHero — 电影感视频背景 Hero（单页版）
  *
- * 全屏自动播放视频 + 液态玻璃导航栏 + BlurText 逐词动画 +
- * 点击"开始探索"跳转 /explore，"加入我们"弹出作者微信。
- * 首页不再包含滚动内容区。
+ * 全屏视频 + 标题白色悬浮 + 浅色玻璃卡片承载黑字内容。
  */
 export function CinematicHero() {
   const prefersReduced = useReducedMotion();
@@ -30,15 +28,12 @@ export function CinematicHero() {
   const [joinOpen, setJoinOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // 强制触发视频播放（解决 hydration 后 autoPlay 失效）
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     const play = video.play();
     if (play !== undefined) {
-      play.catch(() => {
-        // 浏览器拦截自动播放，静默忽略（muted 通常不会被拦）
-      });
+      play.catch(() => {});
     }
   }, []);
 
@@ -46,10 +41,7 @@ export function CinematicHero() {
     <>
       {/* ====== 视频背景层 ====== */}
       <div className="fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        {/* 视频加载前黑色兜底 */}
         <div className="absolute inset-0 bg-black" />
-
-        {/* 全屏视频 — 优先本地文件，回退 CDN */}
         <video
           ref={videoRef}
           autoPlay
@@ -62,9 +54,8 @@ export function CinematicHero() {
           <source src="/videos/hero.mp4" type="video/mp4" />
           <source src={VIDEO_URL} type="video/mp4" />
         </video>
-
-        {/* 暗色叠加层 — 确保白色文字可读 */}
-        <div className="absolute inset-0 bg-black/20" />
+        {/* 视频叠加 — 保持标题白色可读 */}
+        <div className="absolute inset-0 bg-black/25" />
       </div>
 
       {/* ====== 首页悬浮导航栏 ====== */}
@@ -72,93 +63,68 @@ export function CinematicHero() {
 
       {/* ====== Hero 内容区 ====== */}
       <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center">
-        {/* 徽章 */}
-        <motion.div
-          initial={prefersReduced ? {} : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="liquid-glass mb-8 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm text-white"
-          style={{
-            backgroundColor: "rgb(255 255 255 / 0.08)",
-            textShadow: "0 1px 3px rgb(0 0 0 / 0.5)",
-          }}
-        >
-          <Sparkles className="size-3.5 text-white/80" />
-          <span>广东石油化工学院知识分享平台</span>
-        </motion.div>
-
-        {/* 标题 — BlurText 逐词动画 */}
+        {/* 标题 — BlurText 逐词动画，白色悬浮 */}
         <BlurText
           text="观澜知远"
-          className="mb-3 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
+          className="mb-8 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
           duration={0.35}
           stagger={0.12}
           style={{ textShadow: "0 4px 40px rgb(0 0 0 / 0.6)" }}
         />
 
-        {/* 副标题小字 */}
-        <motion.p
-          initial={prefersReduced ? {} : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
-          className="mb-6 text-lg text-white/80 tracking-widest"
-          style={{ textShadow: "0 2px 15px rgb(0 0 0 / 0.5)" }}
-        >
-          观往来之澜，知山河之远
-        </motion.p>
-
-        {/* 描述 — 延迟淡入 + 模糊消除 */}
-        <motion.p
-          initial={prefersReduced ? {} : { filter: "blur(4px)", opacity: 0 }}
-          animate={{ filter: "blur(0px)", opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
-          className="mx-auto mb-10 max-w-xl text-base text-white/85 sm:text-lg leading-relaxed"
-          style={{ textShadow: "0 2px 10px rgb(0 0 0 / 0.4)" }}
-        >
-          连接校园，共享智慧
-          <br className="hidden sm:block" />
-          记录你的成长轨迹，与校友一起拓展视野
-        </motion.p>
-
-        {/* CTA 按钮组 — 延迟淡入 */}
+        {/* 浅色玻璃卡片 — 承载黑字内容 */}
         <motion.div
-          initial={prefersReduced ? {} : { opacity: 0, y: 20 }}
+          initial={prefersReduced ? {} : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.1, ease: "easeOut" }}
-          className="flex items-center gap-3 flex-wrap justify-center"
+          transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
+          className="bg-white/85 backdrop-blur-xl rounded-2xl shadow-2xl px-6 py-8 sm:px-10 sm:py-10 max-w-lg w-full"
         >
-          {/* 主 CTA: 开始探索 → /explore */}
-          <Link
-            href="/explore"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-black shadow-xl transition-all hover:bg-white/90 hover:scale-105 active:scale-95"
-          >
-            开始探索
-            <ArrowRight className="size-4" />
-          </Link>
+          {/* 徽章 */}
+          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-black/5 px-3 py-1 text-sm text-black/70">
+            <Sparkles className="size-3.5 text-amber-500" />
+            <span>广东石油化工学院知识分享平台</span>
+          </div>
 
-          {/* 次 CTA: 加入我们 → 微信弹窗 */}
+          {/* 副标题小字 */}
+          <p className="mb-1 text-base text-black/60 tracking-widest">
+            观往来之澜，知山河之远
+          </p>
+
+          {/* 描述 — 无间距 */}
+          <p className="text-sm text-black/55 leading-relaxed">
+            连接校园，共享智慧
+            <br />
+            记录你的成长轨迹，与校友一起拓展视野
+          </p>
+
+          {/* CTA 按钮组 */}
+          <div className="mt-6 flex items-center gap-3 flex-wrap justify-center">
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-2 rounded-full bg-black px-7 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-black/85 hover:scale-105 active:scale-95"
+            >
+              开始探索
+              <ArrowRight className="size-4" />
+            </Link>
+
+            <button
+              onClick={() => setJoinOpen(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-black border border-black/15 shadow-sm transition-all hover:bg-gray-50 hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              发现作者
+              <ArrowRight className="size-4" />
+            </button>
+          </div>
+
+          {/* 网站初心 */}
           <button
-            onClick={() => setJoinOpen(true)}
-            className="liquid-glass inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-medium text-white transition-all hover:bg-white/[0.06] hover:scale-105 active:scale-95 cursor-pointer"
-            style={{ backgroundColor: "rgb(255 255 255 / 0.04)" }}
+            onClick={() => setMissionOpen(true)}
+            className="mt-4 inline-flex items-center gap-1 text-xs text-black/45 hover:text-black/70 transition-colors cursor-pointer"
           >
-            加入我们
-            <ArrowRight className="size-4" />
+            <Heart className="size-3 text-red-500" />
+            网站初心
           </button>
         </motion.div>
-
-        {/* 网站初心 — 小字链接 */}
-        <motion.button
-          initial={prefersReduced ? {} : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 1.5, ease: "easeOut" }}
-          onClick={() => setMissionOpen(true)}
-          className="mt-5 inline-flex items-center gap-1 text-xs text-white/65 hover:text-white/90 transition-colors cursor-pointer"
-          style={{ textShadow: "0 1px 4px rgb(0 0 0 / 0.5)" }}
-        >
-          <Heart className="size-3 text-red-400" />
-          网站初心
-        </motion.button>
 
         {/* 网站初心 Dialog */}
         <Dialog open={missionOpen} onOpenChange={setMissionOpen}>
@@ -178,7 +144,7 @@ export function CinematicHero() {
           </DialogContent>
         </Dialog>
 
-        {/* 加入我们 Dialog — 微信联系 */}
+        {/* 发现作者 Dialog — 微信联系 */}
         <Dialog open={joinOpen} onOpenChange={setJoinOpen}>
           <DialogContent className="max-w-sm text-center">
             <DialogHeader>
