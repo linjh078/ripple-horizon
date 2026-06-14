@@ -20,7 +20,7 @@ const VIDEO_URL =
 /**
  * CinematicHero — 电影感视频背景 Hero（单页版）
  *
- * 全屏视频 + 标题白色悬浮 + 浅色玻璃卡片承载黑字内容。
+ * 全屏视频 + 标题白色悬浮 + 内容直接落在视频上无遮挡。
  */
 export function CinematicHero() {
   const prefersReduced = useReducedMotion();
@@ -72,26 +72,35 @@ export function CinematicHero() {
           style={{ textShadow: "0 4px 40px rgb(0 0 0 / 0.6)" }}
         />
 
-        {/* 轻透玻璃卡片 — 不挡风景，黑字清晰 */}
+        {/* 内容直接落在视频上 — 无框无遮挡，白字+阴影清晰可读 */}
         <motion.div
           initial={prefersReduced ? {} : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
-          className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 px-6 py-8 sm:px-10 sm:py-10 max-w-lg w-full"
+          className="max-w-lg w-full space-y-4"
         >
           {/* 徽章 */}
-          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white/40 px-3 py-1 text-sm text-black/80">
-            <Sparkles className="size-3.5 text-amber-500" />
+          <div
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-sm text-white"
+            style={{ textShadow: "0 1px 4px rgb(0 0 0 / 0.4)" }}
+          >
+            <Sparkles className="size-3.5 text-amber-400" />
             <span>广东石油化工学院知识分享平台</span>
           </div>
 
           {/* 副标题小字 */}
-          <p className="mb-1 text-base text-black/80 tracking-widest">
+          <p
+            className="text-base tracking-widest text-white/85"
+            style={{ textShadow: "0 1px 8px rgb(0 0 0 / 0.5)" }}
+          >
             观往来之澜，知山河之远
           </p>
 
-          {/* 描述 — 无间距 */}
-          <p className="text-sm text-black/70 leading-relaxed">
+          {/* 描述 */}
+          <p
+            className="text-sm leading-relaxed text-white/80"
+            style={{ textShadow: "0 1px 8px rgb(0 0 0 / 0.5)" }}
+          >
             连接校园，共享智慧
             <br />
             记录你的成长轨迹，与校友一起拓展视野
@@ -101,7 +110,7 @@ export function CinematicHero() {
           <div className="mt-6 flex items-center gap-3 flex-wrap justify-center">
             <Link
               href="/explore"
-              className="inline-flex items-center gap-2 rounded-full bg-black px-7 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-black/85 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-black shadow-lg transition-all hover:bg-white/90 hover:scale-105 active:scale-95"
             >
               开始探索
               <ArrowRight className="size-4" />
@@ -109,7 +118,8 @@ export function CinematicHero() {
 
             <button
               onClick={() => setJoinOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-white/60 backdrop-blur-sm px-7 py-3 text-sm font-medium text-black border border-black/10 shadow-sm transition-all hover:bg-white/80 hover:scale-105 active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-sm px-7 py-3 text-sm font-medium text-white border border-white/30 shadow-sm transition-all hover:bg-white/35 hover:scale-105 active:scale-95 cursor-pointer"
+              style={{ textShadow: "0 1px 4px rgb(0 0 0 / 0.3)" }}
             >
               发现作者
               <ArrowRight className="size-4" />
@@ -119,9 +129,10 @@ export function CinematicHero() {
           {/* 网站初心 */}
           <button
             onClick={() => setMissionOpen(true)}
-            className="mt-4 inline-flex items-center gap-1 text-xs text-black/50 hover:text-black/80 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 text-xs text-white/55 hover:text-white/85 transition-colors cursor-pointer"
+            style={{ textShadow: "0 1px 4px rgb(0 0 0 / 0.4)" }}
           >
-            <Heart className="size-3 text-red-500" />
+            <Heart className="size-3 text-red-400" />
             网站初心
           </button>
         </motion.div>

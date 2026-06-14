@@ -14,38 +14,57 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [phase, setPhase] = useState<"loading" | "playing" | "complete">("loading");
   const hasPlayedOnce = useRef(false);
+  const phaseRef = useRef(phase);
+  phaseRef.current = phase; // 保持 ref 同步，避免 effect 循环
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // 自动播放视频
+  // 自动播放视频 — 依赖 mounted 确保 video 元素已挂载
   useEffect(() => {
+    if (!mounted) return; // 视频尚未挂载
     const video = videoRef.current;
     if (!video || hasPlayedOnce.current) return;
 
-    const playVideo = async () => {
-      try {
-        await video.play();
-        hasPlayedOnce.current = true;
-        setPhase("playing");
-      } catch {
-        // 自动播放被阻止时直接展示内容
+    // 超时兜底：5 秒后无论如何展示内容
+    const timeout = setTimeout(() => {
+      if (phaseRef.current === "loading") {
         setPhase("complete");
       }
+    }, 5000);
+
+    const handleCanPlay = () => {
+      clearTimeout(timeout);
+      if (hasPlayedOnce.current) return;
+      video.play().then(() => {
+        hasPlayedOnce.current = true;
+        setPhase("playing");
+      }).catch(() => {
+        setPhase("complete");
+      });
     };
-    playVideo();
+
+    // 如果视频已经可以播放，立即开始
+    if (video.readyState >= 2) {
+      handleCanPlay();
+    } else {
+      video.addEventListener("canplay", handleCanPlay);
+    }
 
     const handleEnded = () => {
       setPhase("complete");
-      // 视频结束后继续循环作为背景
       video.loop = true;
       video.play().catch(() => {});
     };
-
     video.addEventListener("ended", handleEnded);
-    return () => video.removeEventListener("ended", handleEnded);
-  }, []);
+
+    return () => {
+      clearTimeout(timeout);
+      video.removeEventListener("canplay", handleCanPlay);
+      video.removeEventListener("ended", handleEnded);
+    };
+  }, [mounted]);
 
   if (!mounted) {
     return (
