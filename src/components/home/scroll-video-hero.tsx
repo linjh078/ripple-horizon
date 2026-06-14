@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-
-const VIDEO_URL =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260317_100335_dc625816-c3c1-4b00-b93e-4cb301cf5ea5.mp4";
+import { motion } from "framer-motion";
 
 /**
  * ScrollVideoHero — 滚动驱动视频背景
@@ -13,10 +10,8 @@ const VIDEO_URL =
  * 前景内容有视差层级，滚动到底后显示 children（探索卡片）。
  */
 export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
-  const prefersReduced = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -45,7 +40,6 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
 
     if (scrollEnd <= 0) return;
     const progress = Math.max(0, Math.min(1, scrolled / scrollEnd));
-    setScrollProgress(progress);
 
     // 映射滚动进度到视频时间
     const targetTime = progress * video.duration;
@@ -82,8 +76,7 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
           preload="auto"
           className="absolute inset-0 h-full w-full object-cover"
         >
-          <source src="/videos/hero.mp4" type="video/mp4" />
-          <source src={VIDEO_URL} type="video/mp4" />
+          <source src="/videos/earth.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/30" />
       </div>
