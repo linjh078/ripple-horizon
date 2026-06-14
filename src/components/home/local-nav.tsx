@@ -27,7 +27,7 @@ const NAV_LINKS = [
  * 悬浮在视频背景之上，中段 liquid-glass pill，
  * 右侧根据登录状态显示用户下拉菜单或"加入我们"。
  */
-export function LocalNav({ onJoinClick }: { onJoinClick: () => void }) {
+export function LocalNav() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
@@ -39,7 +39,7 @@ export function LocalNav({ onJoinClick }: { onJoinClick: () => void }) {
       transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
       className="fixed top-[30px] inset-x-0 z-50"
     >
-      <div className="mx-auto max-w-5xl flex items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl flex items-center gap-4 px-4 sm:px-6">
         {/* 左侧 Logo */}
         <Link
           href="/"
@@ -63,7 +63,7 @@ export function LocalNav({ onJoinClick }: { onJoinClick: () => void }) {
         </nav>
 
         {/* 右侧用户区 */}
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2">
           {status === "loading" ? (
             <div className="size-8 animate-pulse rounded-full bg-white/10" />
           ) : isLoggedIn ? (
@@ -82,11 +82,9 @@ export function LocalNav({ onJoinClick }: { onJoinClick: () => void }) {
               <DropdownMenuContent align="end" className="w-48">
                 {/* 账户信息 */}
                 <div className="px-3 py-2">
-                  <p className="text-sm font-medium truncate">
-                    {user?.name || "用户"}
-                  </p>
+                  <p className="text-sm font-medium">账户</p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {user?.email || ""}
+                    {user?.name || "用户"}
                   </p>
                 </div>
                 <DropdownMenuSeparator />
@@ -110,12 +108,12 @@ export function LocalNav({ onJoinClick }: { onJoinClick: () => void }) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <button
-              onClick={onJoinClick}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-all hover:bg-white/90 hover:scale-105 active:scale-95 cursor-pointer"
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-all hover:bg-white/90 hover:scale-105 active:scale-95"
             >
               加入我们
-            </button>
+            </Link>
           )}
         </div>
       </div>

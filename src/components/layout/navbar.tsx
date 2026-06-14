@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,7 +21,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4 sm:px-6">
         {/* 左侧 Logo */}
         <Link
           href="/"
@@ -63,7 +64,7 @@ export function Navbar() {
         </nav>
 
         {/* 右侧用户区 */}
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2">
           {status === "loading" ? (
             <div className="size-8 animate-pulse rounded-full bg-muted" />
           ) : isLoggedIn ? (
@@ -79,7 +80,14 @@ export function Navbar() {
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-3 py-2">
+                  <p className="text-sm font-medium">账户</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user?.name || "用户"}
+                  </p>
+                </div>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   render={
                     <Link

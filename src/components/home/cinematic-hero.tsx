@@ -68,7 +68,7 @@ export function CinematicHero() {
       </div>
 
       {/* ====== 首页悬浮导航栏 ====== */}
-      <LocalNav onJoinClick={() => setJoinOpen(true)} />
+      <LocalNav />
 
       {/* ====== Hero 内容区 ====== */}
       <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center">

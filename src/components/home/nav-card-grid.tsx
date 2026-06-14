@@ -1,5 +1,5 @@
 import { NavCard } from "@/components/home/nav-card";
-import { Users, Award, Library, Target, Building2, Share2 } from "lucide-react";
+import { Users, Award, Library, Target, Share2, MapPin } from "lucide-react";
 
 const cards = [
   {
@@ -35,20 +35,20 @@ const cards = [
     bgColor: "bg-red-50 dark:bg-red-950/30",
   },
   {
-    icon: Building2,
-    title: "企业需求",
-    description: "企业 HR 发布职位需求，告诉你在校应该学什么",
-    href: "/companies",
-    color: "text-orange-600",
-    bgColor: "bg-orange-50 dark:bg-orange-950/30",
-  },
-  {
     icon: Share2,
     title: "信息共享",
     description: "优质课程、实用网站、软件技巧，信息共享与交流",
     href: "/resources",
     color: "text-teal-600",
     bgColor: "bg-teal-50 dark:bg-teal-950/30",
+  },
+  {
+    icon: MapPin,
+    title: "线下空间",
+    description: "校园周边生活信息分享，发现好吃好玩好去处",
+    href: "/life",
+    color: "text-orange-600",
+    bgColor: "bg-orange-50 dark:bg-orange-950/30",
   },
 ];
 
