@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
-import { Navbar } from "@/components/layout/navbar";
+import { NavbarWrapper } from "@/components/layout/navbar-wrapper";
 import { Footer } from "@/components/layout/footer";
 import { SessionProvider } from "next-auth/react";
 import "./globals.css";
@@ -42,7 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
+            <NavbarWrapper />
             <main className="flex-1">{children}</main>
             <Footer />
             <Toaster position="top-center" richColors />
