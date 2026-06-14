@@ -98,7 +98,13 @@ export function CommentSection({ postId }: CommentSectionProps) {
       ) : (
         <div className="divide-y">
           {comments.map((comment) => (
-            <CommentItem key={comment.id} comment={comment} />
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              currentUserId={session?.user?.id}
+              postId={postId}
+              onDelete={(commentId) => setComments((prev) => prev.filter((c) => c.id !== commentId))}
+            />
           ))}
         </div>
       )}

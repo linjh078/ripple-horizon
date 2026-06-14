@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { MapPin, Globe } from "lucide-react";
 import { PositionForm } from "@/components/companies/position-form";
 import { PositionCard } from "@/components/companies/position-card";
+import { BackButton } from "@/components/shared/back-button";
 
 export default async function CompanyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,6 +17,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+      <BackButton href="/companies" label="返回企业列表" />
       <div className="mb-6">
         <h1 className="text-2xl font-bold">{company.name}</h1>
         <div className="flex flex-wrap gap-2 mt-2">

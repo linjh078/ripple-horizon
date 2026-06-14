@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CategoryBadge } from "@/components/posts/category-badge";
 import { LikeButton } from "@/components/likes/like-button";
@@ -9,6 +10,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import { DeleteButton } from "@/components/shared/delete-button";
+import { deletePost } from "@/lib/actions/posts";
 
 export default async function PostDetailPage({
   params,
@@ -16,6 +19,8 @@ export default async function PostDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const session = await auth();
+  const currentUserId = session?.user?.id;
 
   const post = await prisma.post.findUnique({
     where: { id },
@@ -28,14 +33,19 @@ export default async function PostDetailPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      {/* 返回按钮 */}
-      <Link
-        href="/posts"
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "mb-4")}
-      >
-        <ArrowLeft className="size-4" />
-        <span className="ml-1.5">返回列表</span>
-      </Link>
+      {/* 返回按钮 + 删除 */}
+      <div className="flex items-center justify-between mb-4">
+        <Link
+          href="/posts"
+          className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+        >
+          <ArrowLeft className="size-4" />
+          <span className="ml-1.5">返回列表</span>
+        </Link>
+        {currentUserId === post.author.id && (
+          <DeleteButton action={deletePost} itemId={post.id} itemLabel={post.title} redirectTo="/posts" />
+        )}
+      </div>
 
       {/* 帖子头部 */}
       <div className="mb-6">

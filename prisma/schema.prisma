@@ -39,6 +39,8 @@ model User {
   offlineEvents  OfflineEvent[]
   subjects       Subject[]
   materials      SubjectMaterial[]
+  companies      Company[]
+  positions      Position[]
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -148,7 +150,7 @@ model LifeSpot {
   description   String
   category      String   // FOOD | SHOP | SERVICE | ENTERTAINMENT
   location      String?
-  imageUrl      String?
+  imageUrls     String?  // JSON 数组存储图片 URL
   submittedById String
   submittedBy   User     @relation(fields: [submittedById], references: [id], onDelete: Cascade)
 
@@ -198,6 +200,8 @@ model Company {
   description String
   location    String?
   website     String?
+  creatorId   String?
+  creator     User?      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   positions   Position[]
 
   createdAt   DateTime   @default(now())
@@ -211,6 +215,8 @@ model Position {
   requirements String?
   companyId    String
   company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorId    String?
+  creator      User?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

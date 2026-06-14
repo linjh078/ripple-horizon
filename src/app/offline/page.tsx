@@ -1,9 +1,12 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BackButton } from "@/components/shared/back-button";
+import { DeleteButton } from "@/components/shared/delete-button";
 import { OfflineEventForm } from "@/components/offline/event-form";
+import { deleteOfflineEvent } from "@/lib/actions/life";
 
 const CATEGORY_COLORS: Record<string, string> = {
   "沙龙": "bg-blue-50 text-blue-700",
@@ -25,6 +28,8 @@ function formatDate(d: Date) {
 export const dynamic = "force-dynamic";
 
 export default async function OfflinePage() {
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   const events = await prisma.offlineEvent.findMany({
     include: { author: { select: { id: true, name: true } } },
     orderBy: { eventDate: "asc" },
@@ -42,7 +47,7 @@ export default async function OfflinePage() {
         <OfflineEventForm />
       </div>
       <p className="text-muted-foreground mb-8">
-        校园自由空间——沙龙、公开分享、线下活动。在这里发布时间、地点与活动信息。
+        校园多功能自由空间——提供线下相聚的场所，促进跨专业交流。在这里发布时间、地点与活动信息。
       </p>
 
       {events.length === 0 ? (
@@ -56,7 +61,7 @@ export default async function OfflinePage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
-            <Card key={event.id} className="hover:shadow-sm transition-shadow">
+            <Card key={event.id} className="hover:shadow-sm transition-shadow relative">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold text-lg">{event.title}</h3>
@@ -83,6 +88,11 @@ export default async function OfflinePage() {
                     <span>由 {event.author.name} 发起</span>
                   </div>
                 </div>
+                {currentUserId === event.author.id && (
+                  <div className="absolute top-2 right-2">
+                    <DeleteButton action={deleteOfflineEvent} itemId={event.id} itemLabel={event.title} />
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}

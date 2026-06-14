@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SpotForm } from "@/components/life/spot-form";
+import { DeleteButton } from "@/components/shared/delete-button";
+import { BackButton } from "@/components/shared/back-button";
+import { deleteLifeSpot } from "@/lib/actions/life";
 
 const CATEGORIES = [
   { label: "全部", value: "" },
@@ -28,6 +32,8 @@ export default async function LifePage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   const where = category ? { category } : {};
 
   const spots = await prisma.lifeSpot.findMany({
@@ -40,6 +46,7 @@ export default async function LifePage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <BackButton />
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">校园周边</h1>
       </div>
@@ -79,7 +86,7 @@ export default async function LifePage({
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {spots.map((spot) => (
-            <Card key={spot.id} className="hover:shadow-sm transition-shadow">
+            <Card key={spot.id} className="hover:shadow-sm transition-shadow relative">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">{spot.name}</CardTitle>
@@ -89,6 +96,13 @@ export default async function LifePage({
                 </div>
               </CardHeader>
               <CardContent>
+                {spot.imageUrls && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {JSON.parse(spot.imageUrls).map((url: string, i: number) => (
+                      <img key={i} src={url} alt="" className="size-20 object-cover rounded-md border" />
+                    ))}
+                  </div>
+                )}
                 <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
                   {spot.description}
                 </p>
@@ -102,6 +116,11 @@ export default async function LifePage({
                   由 {spot.submittedBy.name} 分享
                 </p>
               </CardContent>
+              {currentUserId === spot.submittedBy.id && (
+                <div className="absolute top-2 right-2">
+                  <DeleteButton action={deleteLifeSpot} itemId={spot.id} itemLabel={spot.name} />
+                </div>
+              )}
             </Card>
           ))}
         </div>

@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -5,14 +6,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MaterialForm } from "@/components/courses/material-form";
 import { BackButton } from "@/components/shared/back-button";
+import { DeleteButton } from "@/components/shared/delete-button";
+import { deleteMaterial } from "@/lib/actions/subjects";
 
 export default async function SubjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   const subject = await prisma.subject.findUnique({
     where: { id },
     include: {
       author: { select: { name: true } },
-      materials: { include: { author: { select: { name: true } } }, orderBy: { createdAt: "desc" } },
+      materials: { include: { author: { select: { id: true, name: true } } }, orderBy: { createdAt: "desc" } },
     },
   });
   if (!subject) notFound();
@@ -39,7 +44,7 @@ export default async function SubjectPage({ params }: { params: Promise<{ id: st
       ) : (
         <div className="space-y-4">
           {subject.materials.map((m) => (
-            <Card key={m.id}>
+            <Card key={m.id} className="relative">
               <CardContent className="pt-6">
                 <h3 className="font-semibold">{m.title}</h3>
                 <p className="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">{m.content}</p>
@@ -52,6 +57,11 @@ export default async function SubjectPage({ params }: { params: Promise<{ id: st
                 )}
                 <p className="text-xs text-muted-foreground mt-2">由 {m.author.name} 上传</p>
               </CardContent>
+              {currentUserId === m.author.id && (
+                <div className="absolute top-2 right-2">
+                  <DeleteButton action={deleteMaterial} itemId={m.id} itemLabel={m.title} />
+                </div>
+              )}
             </Card>
           ))}
         </div>

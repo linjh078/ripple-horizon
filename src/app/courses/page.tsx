@@ -1,11 +1,16 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SubjectCard } from "@/components/courses/subject-card";
 import { SubjectForm } from "@/components/courses/subject-form";
 import { BackButton } from "@/components/shared/back-button";
+import { DeleteButton } from "@/components/shared/delete-button";
+import { deleteSubject } from "@/lib/actions/subjects";
 
 export default async function CoursesPage() {
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   const subjects = await prisma.subject.findMany({
-    include: { _count: { select: { materials: true } }, author: { select: { name: true } } },
+    include: { _count: { select: { materials: true } }, author: { select: { id: true, name: true } } },
     orderBy: { createdAt: "desc" },
   });
 
@@ -22,7 +27,14 @@ export default async function CoursesPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {subjects.map((s) => (
-            <SubjectCard key={s.id} id={s.id} name={s.name} department={s.department} description={s.description} materialCount={s._count.materials} />
+            <div key={s.id} className="relative">
+              <SubjectCard id={s.id} name={s.name} department={s.department} description={s.description} materialCount={s._count.materials} />
+              {currentUserId === s.author.id && (
+                <div className="absolute top-2 right-2 z-10">
+                  <DeleteButton action={deleteSubject} itemId={s.id} itemLabel={s.name} />
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}

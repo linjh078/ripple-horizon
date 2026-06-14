@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { EventForm } from "@/components/space/event-form";
 import { DeleteEventButton } from "@/components/space/delete-event-button";
 import { ProfileEditor } from "@/components/space/profile-editor";
+import { BackButton } from "@/components/shared/back-button";
 
 const ROLE_LABELS: Record<string, string> = {
   STUDENT: "在校生",
@@ -40,6 +41,7 @@ export default async function SpacePage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+      <BackButton label="返回探索" />
       {/* 个人信息头部 */}
       <div className="flex flex-col items-center text-center mb-8 sm:flex-row sm:text-left sm:gap-6">
         <Avatar className="size-20 mb-4 sm:mb-0">

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUpload } from "@/components/shared/image-upload";
 import {
   Select,
   SelectContent,
@@ -46,6 +47,7 @@ export function SpotForm() {
   const { data: session } = useSession();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
   if (!session) {
     return (
@@ -56,17 +58,19 @@ export function SpotForm() {
   }
 
   async function handleAction(formData: FormData) {
+    formData.append("imageUrls", JSON.stringify(images));
     const result = await createLifeSpot(formData);
     if (result?.error) {
       toast.error(result.error);
     } else {
       toast.success("地点添加成功！");
       setOpen(false);
+      setImages([]);
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setImages([]); }}>
       <DialogTrigger
         render={
           <Button size="sm">分享地点</Button>
@@ -103,6 +107,7 @@ export function SpotForm() {
             <Label htmlFor="spot-location">位置（选填）</Label>
             <Input id="spot-location" name="location" placeholder="如：学校北门对面小巷内50米" />
           </div>
+          <ImageUpload images={images} onChange={setImages} />
           <SubmitButton />
         </form>
       </DialogContent>

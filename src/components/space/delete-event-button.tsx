@@ -14,7 +14,9 @@ export function DeleteEventButton({ eventId }: { eventId: string }) {
   async function handleDelete() {
     if (!confirm("确定删除这条事件吗？")) return;
     setLoading(true);
-    const result = await deleteLifeEvent(eventId);
+    const formData = new FormData();
+    formData.append("id", eventId);
+    const result = await deleteLifeEvent(formData);
     if (result?.error) {
       toast.error(result.error);
     } else {
