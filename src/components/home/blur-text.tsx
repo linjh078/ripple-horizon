@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 interface BlurTextProps {
   text: string;
   className?: string;
+  style?: React.CSSProperties;
   duration?: number;
   stagger?: number;
 }
@@ -19,6 +20,7 @@ interface BlurTextProps {
 export function BlurText({
   text,
   className,
+  style,
   duration = 0.35,
   stagger = 0.1,
 }: BlurTextProps) {
@@ -26,11 +28,11 @@ export function BlurText({
   const words = text.split(" ");
 
   if (prefersReduced) {
-    return <span className={className}>{text}</span>;
+    return <span className={className} style={style}>{text}</span>;
   }
 
   return (
-    <span className={className} aria-label={text}>
+    <span className={className} style={style} aria-label={text}>
       {words.map((word, i) => (
         <motion.span
           key={i}
