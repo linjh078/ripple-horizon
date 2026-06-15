@@ -18,10 +18,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { registerUser } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
-const ROLES = [
+const IDENTITIES = [
   { value: "STUDENT", label: "在校生" },
-  { value: "TEACHER", label: "教师" },
   { value: "ALUMNI", label: "校友" },
+  { value: "TEACHER", label: "教师" },
+  { value: "COUNSELOR", label: "辅导员" },
   { value: "HR", label: "企业HR" },
 ];
 
@@ -95,15 +96,15 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="role">身份</Label>
-              <Select name="role" required>
+              <Label htmlFor="identity">身份</Label>
+              <Select name="identity" required>
                 <SelectTrigger>
                   <SelectValue placeholder="选择你的身份" />
                 </SelectTrigger>
                 <SelectContent>
-                  {ROLES.map((r) => (
-                    <SelectItem key={r.value} value={r.value}>
-                      {r.label}
+                  {IDENTITIES.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

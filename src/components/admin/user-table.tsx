@@ -14,6 +14,7 @@ type UserRow = {
   name: string;
   email: string;
   role: string;
+  identity: string;
   userNumber: string | null;
   department: string | null;
   createdAt: Date;
@@ -21,19 +22,23 @@ type UserRow = {
 };
 
 const ROLE_OPTIONS = [
-  { value: "STUDENT", label: "在校生", color: "bg-blue-100 text-blue-700" },
-  { value: "TEACHER", label: "教师", color: "bg-green-100 text-green-700" },
-  { value: "ALUMNI", label: "校友", color: "bg-purple-100 text-purple-700" },
-  { value: "HR", label: "企业HR", color: "bg-orange-100 text-orange-700" },
-  { value: "ADMIN", label: "管理员", color: "bg-red-100 text-red-700" },
+  { value: "USER", label: "普通用户" },
+  { value: "HR", label: "企业HR" },
+  { value: "ADMIN", label: "管理员" },
 ];
 
 const ROLE_LABEL_MAP: Record<string, string> = {
-  STUDENT: "在校生",
-  TEACHER: "教师",
-  ALUMNI: "校友",
+  USER: "普通用户",
   HR: "企业HR",
   ADMIN: "管理员",
+};
+
+const IDENTITY_LABELS: Record<string, string> = {
+  STUDENT: "在校生",
+  ALUMNI: "校友",
+  TEACHER: "教师",
+  COUNSELOR: "辅导员",
+  HR: "企业HR",
 };
 
 export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
@@ -133,7 +138,8 @@ export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
                 <th className="text-left px-4 py-3 font-medium whitespace-nowrap">用户</th>
                 <th className="text-left px-4 py-3 font-medium whitespace-nowrap hidden sm:table-cell">编号</th>
                 <th className="text-left px-4 py-3 font-medium whitespace-nowrap hidden md:table-cell">院系</th>
-                <th className="text-left px-4 py-3 font-medium whitespace-nowrap">角色</th>
+                <th className="text-left px-4 py-3 font-medium whitespace-nowrap hidden md:table-cell">身份</th>
+                <th className="text-left px-4 py-3 font-medium whitespace-nowrap">权限</th>
                 <th className="text-left px-4 py-3 font-medium whitespace-nowrap hidden lg:table-cell">帖子</th>
                 <th className="text-left px-4 py-3 font-medium whitespace-nowrap hidden lg:table-cell">注册时间</th>
                 <th className="text-right px-4 py-3 font-medium whitespace-nowrap">操作</th>
@@ -153,6 +159,11 @@ export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
                     {user.department || "—"}
+                  </td>
+                  <td className="px-4 py-3 hidden md:table-cell">
+                    <Badge variant="outline" className="text-xs">
+                      {IDENTITY_LABELS[user.identity] || user.identity}
+                    </Badge>
                   </td>
                   <td className="px-4 py-3">
                     {changingRole === user.id ? (

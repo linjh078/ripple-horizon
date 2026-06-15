@@ -23,8 +23,9 @@ model User {
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  role           String    @default("STUDENT")   // STUDENT | TEACHER | ALUMNI | HR | ADMIN
-  userNumber     String?   @unique               // 身份编号：A00001, H00001, T00001, U00001
+  role           String    @default("USER")      // 权限：USER | HR | ADMIN
+  identity       String    @default("STUDENT")   // 身份：STUDENT | ALUMNI | TEACHER | COUNSELOR | HR
+  userNumber     String?   @unique               // 身份编号：A=校友, H=HR, T=教师, C=辅导员, U=在校生
   department     String?                         // 院系（必填，注册时选填）
   major          String?                         // 专业+班级，如"电子22-2"
   bio            String?                         // 留言板（给来访者的话）

@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-const VALID_ROLES = ["STUDENT", "TEACHER", "ALUMNI", "HR", "ADMIN"];
+const VALID_ROLES = ["USER", "HR", "ADMIN"];
 
 /** 确保当前用户是管理员 */
 async function requireAdmin() {
@@ -39,6 +39,7 @@ export async function getUsers(search?: string) {
       name: true,
       email: true,
       role: true,
+      identity: true,
       userNumber: true,
       department: true,
       createdAt: true,

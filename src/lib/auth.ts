@@ -48,7 +48,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           email: user.email,
           image: user.image,
-          role: user.role, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: user.role,
+          identity: user.identity, // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any;
       },
     }),
@@ -57,24 +58,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
-        (session.user as { role?: string }).role = token.role as string | undefined;
+        (session.user as { role?: string; identity?: string }).role = token.role as string | undefined;
+        (session.user as { role?: string; identity?: string }).identity = token.identity as string | undefined;
       }
       return session;
     },
     async jwt({ token, user }) {
-      // 首次登录时保存 role 到 token
+      // 首次登录时保存 role 和 identity 到 token
       if (user) {
         token.sub = user.id;
-        token.role = (user as { role?: string }).role;
+        token.role = (user as { role?: string; identity?: string }).role;
+        token.identity = (user as { role?: string; identity?: string }).identity;
       }
-      // 兜底：如果 token 中没有 role（旧登录），从数据库查询
-      if (!token.role && token.sub) {
+      // 兜底：如果 token 中没有 role/identity（旧登录），从数据库查询
+      if ((!token.role || !token.identity) && token.sub) {
         try {
           const dbUser = await prisma.user.findUnique({
             where: { id: token.sub },
-            select: { role: true },
+            select: { role: true, identity: true },
           });
-          token.role = dbUser?.role ?? undefined;
+          if (!token.role) token.role = dbUser?.role ?? undefined;
+          if (!token.identity) token.identity = dbUser?.identity ?? undefined;
         } catch {
           // 忽略查询错误
         }

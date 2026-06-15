@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canDelete, canEdit } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function createPost(formData: FormData) {
   const session = await auth();
@@ -26,7 +25,9 @@ export async function createPost(formData: FormData) {
   }
 
   revalidatePath("/posts");
-  redirect("/posts");
+  revalidatePath("/exams");
+  revalidatePath("/resources");
+  return { success: true };
 }
 
 export async function deletePost(formData: FormData) {

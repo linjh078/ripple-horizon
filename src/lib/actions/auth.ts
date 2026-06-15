@@ -10,9 +10,16 @@ import { registerSchema } from "@/lib/validations";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 
-/** 根据身份生成唯一编号：A=管理员, H=HR, T=教师, U=学生/校友 */
-async function generateUserNumber(role: string): Promise<string> {
-  const prefix = role === "ADMIN" ? "A" : role === "HR" ? "H" : role === "TEACHER" ? "T" : "U";
+/** 根据身份生成唯一编号：A=校友, H=HR, T=教师, C=辅导员, U=在校生 */
+async function generateUserNumber(identity: string): Promise<string> {
+  const PREFIX_MAP: Record<string, string> = {
+    STUDENT: "U",
+    ALUMNI: "A",
+    TEACHER: "T",
+    COUNSELOR: "C",
+    HR: "H",
+  };
+  const prefix = PREFIX_MAP[identity] || "U";
   const last = await prisma.user.findFirst({
     where: { userNumber: { startsWith: prefix } },
     orderBy: { userNumber: "desc" },
@@ -29,7 +36,7 @@ export async function registerUser(formData: FormData) {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
     confirmPassword: formData.get("confirmPassword") as string,
-    role: formData.get("role") as string,
+    identity: formData.get("identity") as string,
     department: (formData.get("department") as string) || undefined,
   };
 
@@ -38,7 +45,7 @@ export async function registerUser(formData: FormData) {
     return { error: parsed.error.issues[0].message };
   }
 
-  const { name, email, password, role, department } = parsed.data;
+  const { name, email, password, identity, department } = parsed.data;
 
   // 2. 检查邮箱是否已被注册
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -46,16 +53,17 @@ export async function registerUser(formData: FormData) {
     return { error: "该邮箱已被注册" };
   }
 
-  // 3. 哈希密码并创建用户（自动分配编号）
+  // 3. 哈希密码并创建用户（自动分配编号，权限默认为普通用户）
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userNumber = await generateUserNumber(role);
+  const userNumber = await generateUserNumber(identity);
 
   await prisma.user.create({
     data: {
       name,
       email,
       hashedPassword,
-      role,
+      role: "USER",
+      identity,
       department,
       userNumber,
     },

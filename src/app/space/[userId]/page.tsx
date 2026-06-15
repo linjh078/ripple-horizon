@@ -10,25 +10,18 @@ import { ProfileEditor } from "@/components/space/profile-editor";
 import { BackButton } from "@/components/shared/back-button";
 
 const ROLE_LABELS: Record<string, string> = {
-  STUDENT: "在校生",
-  TEACHER: "教师",
-  ALUMNI: "校友",
+  USER: "普通用户",
   HR: "企业HR",
   ADMIN: "管理员",
 };
 
-/** 从 userNumber 推导真实身份（与权限角色可能不同） */
-function deriveIdentity(userNumber: string | null): string | null {
-  if (!userNumber) return null;
-  const prefix = userNumber.charAt(0).toUpperCase();
-  const map: Record<string, string> = {
-    U: "在校生",
-    A: "校友",
-    T: "教师",
-    H: "企业HR",
-  };
-  return map[prefix] || null;
-}
+const IDENTITY_LABELS: Record<string, string> = {
+  STUDENT: "在校生",
+  ALUMNI: "校友",
+  TEACHER: "教师",
+  COUNSELOR: "辅导员",
+  HR: "企业HR",
+};
 
 export default async function SpacePage({
   params,
@@ -54,10 +47,6 @@ export default async function SpacePage({
 
   if (!user) notFound();
 
-  // 推导真实身份（区别于权限角色），例如管理员可能是校友
-  const identity = deriveIdentity(user.userNumber);
-  const showIdentityBadge = identity && identity !== ROLE_LABELS[user.role];
-
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
       <BackButton label="返回探索" />
@@ -69,12 +58,10 @@ export default async function SpacePage({
           </AvatarFallback>
         </Avatar>
         <div>
-          <div className="flex items-center gap-2 justify-center sm:justify-start mb-1">
+          <div className="flex items-center gap-2 justify-center sm:justify-start mb-1 flex-wrap">
             <h1 className="text-2xl font-bold">{user.name}</h1>
-            <Badge variant="secondary">{ROLE_LABELS[user.role] || user.role}</Badge>
-            {showIdentityBadge && (
-              <Badge variant="outline" className="text-xs">{identity}</Badge>
-            )}
+            <Badge variant="secondary">{IDENTITY_LABELS[user.identity] || user.identity}</Badge>
+            <Badge variant="outline" className="text-xs">{ROLE_LABELS[user.role] || user.role}</Badge>
           </div>
           {[user.department, user.major].filter(Boolean).length > 0 && (
             <p className="text-sm text-muted-foreground">

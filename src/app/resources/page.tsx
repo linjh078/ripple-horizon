@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
 import { BackButton } from "@/components/shared/back-button";
 import { RatingBar } from "@/components/shared/rating-bar";
+import { PostDialog } from "@/components/posts/post-dialog";
 
 const CATEGORIES = [
   { label: "全部", value: "" },
@@ -20,8 +19,6 @@ const LABELS: Record<string, string> = { ONLINE_COURSES: "在线课程", WEBSITE
 
 export default async function ResourcesPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category } = await searchParams;
-  const session = await auth();
-  const isLoggedIn = !!session?.user?.id;
   const where = { category: category || { in: ["ONLINE_COURSES", "WEBSITES", "SOFTWARE_TIPS"] } };
 
   const posts = await prisma.post.findMany({
@@ -35,7 +32,13 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
       <BackButton />
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold">信息共享</h1><p className="text-muted-foreground text-sm mt-1">优质课程、实用网站、软件技巧分享</p></div>
-        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">{isLoggedIn ? "发布" : "登录后发布"}</span></Link>
+        <PostDialog
+          defaultCategory="ONLINE_COURSES"
+          categoryOptions={["ONLINE_COURSES", "WEBSITES", "SOFTWARE_TIPS"]}
+          buttonLabel="发布"
+          unauthenticatedLabel="登录后发布"
+          dialogTitle="发布信息共享"
+        />
       </div>
       <div className="mb-6 flex flex-wrap gap-2">
         {CATEGORIES.map((c) => {
