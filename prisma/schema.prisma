@@ -89,6 +89,9 @@ model Post {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([authorId])
 }
 
 // ============================================================================
@@ -105,6 +108,8 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([postId])
 }
 
 // ============================================================================
@@ -221,6 +226,7 @@ model Rating {
   createdAt  DateTime @default(now())
 
   @@unique([targetId, targetType, userId])
+  @@index([targetId, targetType])
 }
 
 // ============================================================================

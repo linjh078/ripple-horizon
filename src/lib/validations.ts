@@ -38,6 +38,8 @@ export const createPostSchema = z.object({
     "ONLINE_COURSES",
     "WEBSITES",
     "SOFTWARE_TIPS",
+    "STUDY_RESOURCES",
+    "CAREER_SKILLS",
   ]),
   imageUrls: z.string().nullable().optional(),
 });

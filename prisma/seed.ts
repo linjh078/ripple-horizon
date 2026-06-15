@@ -1,14 +1,18 @@
 // ============================================================================
 // 种子数据脚本 — Prisma v5
 // 运行: npx tsx prisma/seed.ts
+// 种子用户密码均为: 123456
 // ============================================================================
 
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 开始播种数据...\n");
+
+  const password = await bcrypt.hash("123456", 10);
 
   const alice = await prisma.user.upsert({
     where: { email: "alice@example.com" },
@@ -16,7 +20,10 @@ async function main() {
     create: {
       name: "张三",
       email: "alice@example.com",
-      role: "STUDENT",
+      role: "USER",
+      identity: "STUDENT",
+      userNumber: "U00001",
+      hashedPassword: password,
       department: "计算机学院",
       bio: "2022级计算机科学与技术专业，热爱编程与分享。",
     },
@@ -28,7 +35,10 @@ async function main() {
     create: {
       name: "李四",
       email: "bob@example.com",
-      role: "TEACHER",
+      role: "USER",
+      identity: "TEACHER",
+      userNumber: "T00001",
+      hashedPassword: password,
       department: "电子信息工程学院",
       bio: "电子信息工程学院教师，主讲数字信号处理与嵌入式系统。",
     },
@@ -40,7 +50,10 @@ async function main() {
     create: {
       name: "王五",
       email: "carol@example.com",
-      role: "ALUMNI",
+      role: "USER",
+      identity: "ALUMNI",
+      userNumber: "A00001",
+      hashedPassword: password,
       department: "化学工程学院",
       bio: "2020届毕业生，目前在深圳从事新能源研发工作。",
     },

@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Search, Trash2, Loader2 } from "lucide-react";
 import { updateUserRole, deleteUser, getUsers } from "@/lib/actions/admin";
 import { toast } from "sonner";
@@ -48,6 +56,7 @@ export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
   const [searching, setSearching] = useState(false);
   const [changingRole, setChangingRole] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   // 搜索防抖
   const handleSearch = useCallback(
@@ -91,20 +100,21 @@ export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
   }
 
   // 删除用户
-  async function handleDelete(userId: string, userName: string) {
-    if (!confirm(`确定要删除用户「${userName}」吗？此操作不可撤销，将同时删除该用户的所有帖子、评论等数据。`)) return;
-
-    setDeleting(userId);
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    const { id, name } = deleteTarget;
+    setDeleting(id);
     const formData = new FormData();
-    formData.append("userId", userId);
+    formData.append("userId", id);
     try {
       const result = await deleteUser(formData);
       if (result?.error) {
         toast.error(result.error);
         return;
       }
-      toast.success(`已删除用户「${userName}」`);
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      toast.success(`已删除用户「${name}」`);
+      setUsers((prev) => prev.filter((u) => u.id !== id));
+      setDeleteTarget(null);
       router.refresh();
     } catch {
       toast.error("删除失败");
@@ -194,7 +204,7 @@ export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
                       size="icon"
                       className="size-8 text-destructive hover:text-destructive"
                       disabled={deleting === user.id}
-                      onClick={() => handleDelete(user.id, user.name)}
+                      onClick={() => setDeleteTarget({ id: user.id, name: user.name })}
                     >
                       {deleting === user.id ? (
                         <Loader2 className="size-3.5 animate-spin" />
@@ -214,6 +224,25 @@ export function AdminUserTable({ initialUsers }: { initialUsers: UserRow[] }) {
           </div>
         )}
       </div>
+
+      <Dialog open={!!deleteTarget} onOpenChange={(v) => { if (!v) setDeleteTarget(null); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>确认删除用户</DialogTitle>
+            <DialogDescription>
+              确定要删除用户「{deleteTarget?.name}」吗？此操作不可撤销，将同时删除该用户的所有帖子、评论等数据。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setDeleteTarget(null)} disabled={!!deleting}>
+              取消
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleDelete} disabled={!!deleting}>
+              {deleting ? "删除中..." : "确认删除"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

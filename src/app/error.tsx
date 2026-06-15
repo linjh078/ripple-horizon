@@ -15,7 +15,9 @@ export default function ErrorPage({
       <AlertCircle className="size-12 text-destructive mb-4" />
       <h2 className="text-xl font-bold mb-2">出了点问题</h2>
       <p className="text-sm text-muted-foreground mb-6">
-        {error.message || "页面加载失败，请稍后重试"}
+        {process.env.NODE_ENV === "development"
+          ? error.message
+          : "页面加载失败，请稍后重试"}
       </p>
       <Button onClick={reset} variant="outline">
         重新加载

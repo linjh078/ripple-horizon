@@ -2,8 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PostCard } from "@/components/posts/post-card";
 import { buttonVariants } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PostDialog } from "@/components/posts/post-dialog";
 
 const CATEGORIES: { label: string; value: string }[] = [
   { label: "全部", value: "" },
@@ -36,13 +36,11 @@ export default async function PostsPage({
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">发现</h1>
-        <Link
-          href="/posts/new"
-          className={cn(buttonVariants({ size: "sm" }))}
-        >
-          <Plus className="size-4" />
-          <span className="ml-1.5">发布</span>
-        </Link>
+        <PostDialog
+          buttonLabel="发布"
+          unauthenticatedLabel="登录后发布"
+          dialogTitle="发布新帖子"
+        />
       </div>
 
       {/* 分类筛选 */}
@@ -75,12 +73,13 @@ export default async function PostsPage({
           <p className="mt-1 text-sm text-muted-foreground">
             成为第一个分享的人吧！
           </p>
-          <Link
-            href="/posts/new"
-            className={cn(buttonVariants(), "mt-4")}
-          >
-            发布第一篇帖子
-          </Link>
+          <div className="mt-4">
+            <PostDialog
+              buttonLabel="发布第一篇帖子"
+              unauthenticatedLabel="登录后发布"
+              dialogTitle="发布新帖子"
+            />
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

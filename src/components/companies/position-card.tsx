@@ -8,6 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Pencil, Trash2 } from "lucide-react";
 import { updatePosition, deletePosition } from "@/lib/actions/companies";
 import { toast } from "sonner";
@@ -38,6 +46,8 @@ export function PositionCard({ position, currentUserId }: { position: PositionDa
   const canEdit = role === "ADMIN" || role === "HR" || isCreator;
   const canDelete = role === "ADMIN" || role === "HR" || isCreator;
   const [editing, setEditing] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   async function handleEdit(formData: FormData) {
     formData.append("id", position.id);
@@ -51,13 +61,17 @@ export function PositionCard({ position, currentUserId }: { position: PositionDa
   }
 
   async function handleDelete() {
-    if (!confirm("确定要删除这个职位吗？此操作不可撤销。")) return;
+    setDeleting(true);
     const formData = new FormData();
     formData.append("id", position.id);
     formData.append("companyId", position.companyId);
     const result = await deletePosition(formData);
+    setDeleting(false);
     if (result?.error) toast.error(result.error);
-    else toast.success("职位已删除");
+    else {
+      toast.success("职位已删除");
+      setDeleteOpen(false);
+    }
   }
 
   if (editing) {
@@ -142,7 +156,8 @@ export function PositionCard({ position, currentUserId }: { position: PositionDa
                   variant="ghost"
                   size="icon"
                   className="size-8 text-destructive hover:text-destructive"
-                  onClick={handleDelete}
+                  onClick={() => setDeleteOpen(true)}
+                  disabled={deleting}
                 >
                   <Trash2 className="size-3.5" />
                 </Button>
@@ -151,6 +166,25 @@ export function PositionCard({ position, currentUserId }: { position: PositionDa
           )}
         </div>
       </CardContent>
+
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>确认删除</DialogTitle>
+            <DialogDescription>
+              确定要删除「{position.title}」这个职位吗？此操作不可撤销。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setDeleteOpen(false)} disabled={deleting}>
+              取消
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
+              {deleting ? "删除中..." : "确认删除"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
