@@ -27,13 +27,15 @@ interface PositionData {
   description: string;
   requirements: string | null;
   companyId: string;
+  creatorId?: string;
 }
 
-export function PositionCard({ position }: { position: PositionData }) {
+export function PositionCard({ position, currentUserId }: { position: PositionData; currentUserId?: string }) {
   const { data: session } = useSession();
   const role = (session?.user as { role?: string })?.role;
-  const canEdit = role === "HR";
-  const canDelete = role === "HR" || role === "ADMIN";
+  const isCreator = currentUserId ? currentUserId === position.creatorId : false;
+  const canEdit = role === "HR" || isCreator;
+  const canDelete = role === "HR" || role === "ADMIN" || isCreator;
   const [editing, setEditing] = useState(false);
 
   async function handleEdit(formData: FormData) {

@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,8 @@ import { BackButton } from "@/components/shared/back-button";
 
 export default async function CompanyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   const company = await prisma.company.findUnique({
     where: { id },
     include: { positions: { orderBy: { createdAt: "desc" } } },
@@ -48,7 +51,9 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                 description: pos.description,
                 requirements: pos.requirements,
                 companyId: company.id,
+                creatorId: pos.creatorId ?? undefined,
               }}
+              currentUserId={currentUserId}
             />
           ))}
         </div>

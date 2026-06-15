@@ -11,6 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { DeleteButton } from "@/components/shared/delete-button";
+import { RatingBar } from "@/components/shared/rating-bar";
 import { deletePost } from "@/lib/actions/posts";
 
 export default async function PostDetailPage({
@@ -92,8 +93,9 @@ export default async function PostDetailPage({
         </div>
       )}
 
-      {/* 点赞 */}
-      <div className="mb-6">
+      {/* 评级 + 点赞 */}
+      <div className="flex flex-wrap items-center gap-4 mb-6">
+        <RatingBar targetId={post.id} targetType="post" />
         <LikeButton postId={post.id} initialCount={post.likeCount} />
       </div>
 

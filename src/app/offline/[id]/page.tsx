@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { BackButton } from "@/components/shared/back-button";
 import { DeleteButton } from "@/components/shared/delete-button";
+import { EditOfflineEventForm } from "@/components/offline/edit-event-form";
 import { deleteOfflineEvent } from "@/lib/actions/life";
 import { Calendar, Clock, MapPin } from "lucide-react";
 
@@ -35,7 +36,10 @@ export default async function OfflineEventPage({
       <div className="flex items-center justify-between mb-6">
         <BackButton href="/offline" label="返回线下空间" />
         {currentUserId === event.author.id && (
-          <DeleteButton action={deleteOfflineEvent} itemId={event.id} itemLabel={event.title} redirectTo="/offline" />
+          <div className="flex gap-1">
+            <EditOfflineEventForm event={event} />
+            <DeleteButton action={deleteOfflineEvent} itemId={event.id} itemLabel={event.title} redirectTo="/offline" />
+          </div>
         )}
       </div>
 

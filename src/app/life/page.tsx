@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { SpotForm } from "@/components/life/spot-form";
 import { DeleteButton } from "@/components/shared/delete-button";
 import { BackButton } from "@/components/shared/back-button";
+import { RatingBar } from "@/components/shared/rating-bar";
 import { deleteLifeSpot } from "@/lib/actions/life";
 
 const CATEGORIES = [
@@ -112,6 +113,9 @@ export default async function LifePage({
                     <span>{spot.location}</span>
                   </div>
                 )}
+                <div className="mt-2 mb-1">
+                  <RatingBar targetId={spot.id} targetType="spot" />
+                </div>
                 <p className="text-xs text-muted-foreground">
                   由 {spot.submittedBy.name} 分享
                 </p>

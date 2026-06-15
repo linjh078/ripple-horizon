@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { MaterialForm } from "@/components/courses/material-form";
 import { BackButton } from "@/components/shared/back-button";
 import { DeleteButton } from "@/components/shared/delete-button";
+import { RatingBar } from "@/components/shared/rating-bar";
 import { deleteMaterial } from "@/lib/actions/subjects";
 
 export default async function SubjectPage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,6 +56,9 @@ export default async function SubjectPage({ params }: { params: Promise<{ id: st
                     ))}
                   </div>
                 )}
+                <div className="mt-3">
+                  <RatingBar targetId={m.id} targetType="material" />
+                </div>
                 <p className="text-xs text-muted-foreground mt-2">由 {m.author.name} 上传</p>
               </CardContent>
               {currentUserId === m.author.id && (

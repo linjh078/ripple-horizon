@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { BackButton } from "@/components/shared/back-button";
 import { DeleteButton } from "@/components/shared/delete-button";
 import { OfflineEventForm } from "@/components/offline/event-form";
+import { EditOfflineEventForm } from "@/components/offline/edit-event-form";
 import { deleteOfflineEvent } from "@/lib/actions/life";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -92,7 +93,8 @@ export default async function OfflinePage() {
                   </div>
                 </div>
                 {currentUserId === event.author.id && (
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    <EditOfflineEventForm event={event} />
                     <DeleteButton action={deleteOfflineEvent} itemId={event.id} itemLabel={event.title} />
                   </div>
                 )}

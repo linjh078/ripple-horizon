@@ -41,13 +41,9 @@ export default async function SpacePage({
 
   if (!user) notFound();
 
-  // 根据角色决定返回目标：一级一级退出
-  const backHref = user.role === "STUDENT" ? "/students" : user.role === "ALUMNI" ? "/alumni" : "/explore";
-  const backLabel = user.role === "STUDENT" ? "返回在校生" : user.role === "ALUMNI" ? "返回校友" : "返回探索";
-
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <BackButton href={backHref} label={backLabel} />
+      <BackButton label="返回探索" />
       {/* 个人信息头部 */}
       <div className="flex flex-col items-center text-center mb-8 sm:flex-row sm:text-left sm:gap-6">
         <Avatar className="size-20 mb-4 sm:mb-0">

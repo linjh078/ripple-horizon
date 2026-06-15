@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { BackButton } from "@/components/shared/back-button";
+import { RatingBar } from "@/components/shared/rating-bar";
 
 const CATEGORIES = [
   { label: "全部", value: "" },
@@ -46,12 +47,17 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
       ) : (
         <div className="space-y-4">
           {posts.map((p) => (
-            <Link key={p.id} href={`/posts/${p.id}`}>
-              <Card className="hover:shadow-sm transition-shadow">
-                <CardHeader className="pb-2"><div className="flex items-center justify-between"><CardTitle className="text-lg">{p.title}</CardTitle><Badge variant="outline">{LABELS[p.category] || p.category}</Badge></div></CardHeader>
-                <CardContent><p className="text-sm text-muted-foreground line-clamp-2">{p.content}</p><p className="text-xs text-muted-foreground mt-2">{p.author.name} · {p._count.comments} 评论</p></CardContent>
-              </Card>
-            </Link>
+            <div key={p.id}>
+              <Link href={`/posts/${p.id}`}>
+                <Card className="hover:shadow-sm transition-shadow">
+                  <CardHeader className="pb-2"><div className="flex items-center justify-between"><CardTitle className="text-lg">{p.title}</CardTitle><Badge variant="outline">{LABELS[p.category] || p.category}</Badge></div></CardHeader>
+                  <CardContent><p className="text-sm text-muted-foreground line-clamp-2">{p.content}</p><p className="text-xs text-muted-foreground mt-2">{p.author.name} · {p._count.comments} 评论</p></CardContent>
+                </Card>
+              </Link>
+              <div className="px-4 pb-3 -mt-1">
+                <RatingBar targetId={p.id} targetType="post" />
+              </div>
+            </div>
           ))}
         </div>
       )}

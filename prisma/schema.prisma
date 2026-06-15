@@ -42,6 +42,7 @@ model User {
   materials      SubjectMaterial[]
   companies      Company[]
   positions      Position[]
+  ratings        Rating[]
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -221,6 +222,23 @@ model Position {
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ============================================================================
+// 评级系统（五级评价）
+// ============================================================================
+
+model Rating {
+  id         String   @id @default(uuid())
+  targetId   String                     // 被评价对象的 ID
+  targetType String                     // subject | post | spot | material
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating     String                     // 夯 | 顶级 | 人上人 | NPC | 拉完了
+
+  createdAt  DateTime @default(now())
+
+  @@unique([targetId, targetType, userId])
 }
 
 // ============================================================================
