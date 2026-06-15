@@ -47,17 +47,15 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
       ) : (
         <div className="space-y-4">
           {posts.map((p) => (
-            <div key={p.id}>
+            <Card key={p.id} className="hover:shadow-sm transition-shadow">
               <Link href={`/posts/${p.id}`}>
-                <Card className="hover:shadow-sm transition-shadow">
-                  <CardHeader className="pb-2"><div className="flex items-center justify-between"><CardTitle className="text-lg">{p.title}</CardTitle><Badge variant="outline">{LABELS[p.category] || p.category}</Badge></div></CardHeader>
-                  <CardContent><p className="text-sm text-muted-foreground line-clamp-2">{p.content}</p><p className="text-xs text-muted-foreground mt-2">{p.author.name} · {p._count.comments} 评论</p></CardContent>
-                </Card>
+                <CardHeader className="pb-2"><div className="flex items-center justify-between"><CardTitle className="text-lg">{p.title}</CardTitle><Badge variant="outline">{LABELS[p.category] || p.category}</Badge></div></CardHeader>
+                <CardContent className="pb-2"><p className="text-sm text-muted-foreground line-clamp-2">{p.content}</p><p className="text-xs text-muted-foreground mt-2">{p.author.name} · {p._count.comments} 评论</p></CardContent>
               </Link>
-              <div className="px-4 pb-3 -mt-1">
+              <div className="px-6 pb-4 pt-0">
                 <RatingBar targetId={p.id} targetType="post" />
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

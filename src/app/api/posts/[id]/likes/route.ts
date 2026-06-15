@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 // POST /api/posts/[id]/likes — 切换点赞状态（需登录）
 export async function POST(
@@ -12,6 +13,12 @@ export async function POST(
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "请先登录" }, { status: 401 });
+    }
+
+    // 速率限制：每个用户每秒 3 次点赞
+    const rl = rateLimit(`likes:${session.user.id}`, 3, 1_000);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "操作太频繁" }, { status: 429 });
     }
 
     const userId = session.user.id;

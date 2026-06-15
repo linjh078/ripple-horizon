@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // GET /api/ratings?targetId=xxx&targetType=xxx — 获取某个对象的所有评级统计
 export async function GET(req: NextRequest) {
@@ -52,6 +53,12 @@ export async function POST(req: NextRequest) {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "请先登录" }, { status: 401 });
+    }
+
+    // 速率限制：每个用户每 10 秒最多 5 次投票
+    const rl = rateLimit(`ratings:${session.user.id}`, 5, 10_000);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "操作太频繁，请稍后再试" }, { status: 429 });
     }
 
     const { targetId, targetType, rating } = await req.json();

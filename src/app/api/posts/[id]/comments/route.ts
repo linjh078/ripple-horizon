@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canDelete } from "@/lib/permissions";
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 // GET /api/posts/[id]/comments — 获取帖子的评论列表
 export async function GET(
@@ -37,6 +38,12 @@ export async function POST(
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "请先登录" }, { status: 401 });
+    }
+
+    // 速率限制：每个用户每 10 秒最多 3 条评论
+    const rl = rateLimit(`comments:${session.user.id}`, 3, 10_000);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "评论太频繁，请稍后再试" }, { status: 429 });
     }
 
     const { content } = await req.json();
