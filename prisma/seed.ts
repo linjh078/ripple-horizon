@@ -55,7 +55,6 @@ async function main() {
         content: "整理了近三年的C语言期末考试题和答案，涵盖指针、结构体、文件操作等重点章节。",
         category: "STUDY_RESOURCES",
         authorId: alice.id,
-        likeCount: 5,
       },
     }),
     prisma.post.create({
@@ -64,7 +63,6 @@ async function main() {
         content: "讲解非常清晰，从零基础到进阶都有，配图生动，每集10分钟。",
         category: "ONLINE_COURSES",
         authorId: alice.id,
-        likeCount: 12,
       },
     }),
     prisma.post.create({
@@ -73,7 +71,6 @@ async function main() {
         content: "覆盖C、C++、Java、Python等主流语言教程。链接：https://c.biancheng.net/",
         category: "WEBSITES",
         authorId: carol.id,
-        likeCount: 8,
       },
     }),
     prisma.post.create({
@@ -82,7 +79,6 @@ async function main() {
         content: "推荐：张宇高数18讲、李永乐线代讲义、王式安概率统计。",
         category: "EXAM_PREP",
         authorId: bob.id,
-        likeCount: 20,
       },
     }),
     prisma.post.create({
@@ -91,7 +87,6 @@ async function main() {
         content: "在深圳实习三个月。Git版本控制是必备技能，沟通能力比技术更重要。",
         category: "CAREER_SKILLS",
         authorId: carol.id,
-        likeCount: 15,
       },
     }),
     prisma.post.create({
@@ -100,7 +95,6 @@ async function main() {
         content: "GitHub Copilot、Prettier、ESLint、GitLens、Material Icon Theme、Todo Tree。",
         category: "SOFTWARE_TIPS",
         authorId: alice.id,
-        likeCount: 10,
       },
     }),
   ]);
