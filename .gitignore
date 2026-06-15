@@ -44,3 +44,7 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# database (each environment has its own)
+/prisma/dev.db*
+/node_modules/.prisma
