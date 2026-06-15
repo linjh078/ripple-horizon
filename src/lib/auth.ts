@@ -62,9 +62,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async jwt({ token, user }) {
+      // 首次登录时保存 role 到 token
       if (user) {
         token.sub = user.id;
         token.role = (user as { role?: string }).role;
+      }
+      // 兜底：如果 token 中没有 role（旧登录），从数据库查询
+      if (!token.role && token.sub) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.sub },
+            select: { role: true },
+          });
+          token.role = dbUser?.role ?? undefined;
+        } catch {
+          // 忽略查询错误
+        }
       }
       return token;
     },
