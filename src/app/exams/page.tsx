@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,8 @@ const SUB_CATEGORIES = [
 
 export default async function ExamsPage({ searchParams }: { searchParams: Promise<{ sub?: string }> }) {
   const { sub } = await searchParams;
+  const session = await auth();
+  const isLoggedIn = !!session?.user?.id;
 
   const where: Record<string, unknown> = { category: "EXAM_PREP" };
   if (sub) where.title = { contains: `[${sub}]` };
@@ -32,7 +35,7 @@ export default async function ExamsPage({ searchParams }: { searchParams: Promis
       <BackButton />
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold">考试升学</h1><p className="text-muted-foreground text-sm mt-1">考研·考公·考证·留学等升学经验分享与资料交流</p></div>
-        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">登录后发帖</span></Link>
+        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">{isLoggedIn ? "发帖" : "登录后发帖"}</span></Link>
       </div>
       <div className="mb-6 flex flex-wrap gap-2">
         {SUB_CATEGORIES.map((s) => {

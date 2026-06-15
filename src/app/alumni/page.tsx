@@ -4,7 +4,12 @@ import { BackButton } from "@/components/shared/back-button";
 
 export default async function AlumniPage() {
   const alumni = await prisma.user.findMany({
-    where: { role: "ALUMNI" },
+    where: {
+      OR: [
+        { role: "ALUMNI" },
+        { userNumber: { startsWith: "A" } },  // 管理员/HR 也可能是校友
+      ],
+    },
     include: { _count: { select: { posts: true } } },
     orderBy: { createdAt: "desc" },
   });

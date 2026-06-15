@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,8 @@ const LABELS: Record<string, string> = { ONLINE_COURSES: "在线课程", WEBSITE
 
 export default async function ResourcesPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category } = await searchParams;
+  const session = await auth();
+  const isLoggedIn = !!session?.user?.id;
   const where = { category: category || { in: ["ONLINE_COURSES", "WEBSITES", "SOFTWARE_TIPS"] } };
 
   const posts = await prisma.post.findMany({
@@ -32,7 +35,7 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
       <BackButton />
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold">信息共享</h1><p className="text-muted-foreground text-sm mt-1">优质课程、实用网站、软件技巧分享</p></div>
-        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">登录后发布</span></Link>
+        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">{isLoggedIn ? "发布" : "登录后发布"}</span></Link>
       </div>
       <div className="mb-6 flex flex-wrap gap-2">
         {CATEGORIES.map((c) => {
