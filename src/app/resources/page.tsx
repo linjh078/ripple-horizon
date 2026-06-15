@@ -32,7 +32,7 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
       <BackButton />
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold">信息共享</h1><p className="text-muted-foreground text-sm mt-1">优质课程、实用网站、软件技巧分享</p></div>
-        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">发布</span></Link>
+        <Link href="/posts/new" className={cn(buttonVariants({ size: "sm" }))}><Plus className="size-4" /><span className="ml-1.5">登录后发布</span></Link>
       </div>
       <div className="mb-6 flex flex-wrap gap-2">
         {CATEGORIES.map((c) => {

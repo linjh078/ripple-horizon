@@ -165,6 +165,11 @@ export function CinematicHero() {
               <DialogTitle className="flex items-center justify-center gap-2">
                 <MessageCircle className="size-5 text-green-500" />
                 联系作者
+                <img
+                  src="/cxk.webp"
+                  alt="彩蛋"
+                  className="size-7 object-cover rounded-full border border-green-300"
+                />
               </DialogTitle>
               <DialogDescription className="pt-2 text-base">
                 欢迎加入观澜知远！请添加作者微信交流：
@@ -176,7 +181,7 @@ export function CinematicHero() {
             </div>
             <div className="mt-3 flex justify-center">
               <img
-                src="/cxk.webp"
+                src="/lxzz.jpg"
                 alt="联系作者"
                 className="w-32 h-32 object-cover rounded-xl border shadow-sm"
               />

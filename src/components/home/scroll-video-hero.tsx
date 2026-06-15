@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /** 视频播放到 20% 时定格——地球初现，快速切入 */
 const JUMP_AT = 0.2;
-/** sessionStorage key —— 同一次浏览器会话内回退不再重播 */
-const INTRO_KEY = "explore-intro-played";
 
 /**
  * ExploreIntroVideo — 探索频道自动播放视频开场
@@ -30,19 +28,12 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
 
-    // 回退时不重播：sessionStorage 命中则直接展示内容
-    if (typeof window !== "undefined" && sessionStorage.getItem(INTRO_KEY) === "1") {
-      setPhase("complete");
-      return;
-    }
-
     const video = videoRef.current;
     if (!video || hasPlayedOnce.current) return;
 
     // 超时兜底：5 秒后无论如何展示内容
     const timeout = setTimeout(() => {
       if (phaseRef.current !== "complete") {
-        sessionStorage.setItem(INTRO_KEY, "1");
         setPhase("complete");
       }
     }, 5000);
@@ -54,7 +45,6 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
         hasPlayedOnce.current = true;
         setPhase("playing");
       }).catch(() => {
-        sessionStorage.setItem(INTRO_KEY, "1");
         setPhase("complete");
       });
     };
@@ -64,7 +54,6 @@ export function ScrollVideoHero({ children }: { children: React.ReactNode }) {
       if (phaseRef.current !== "playing") return;
       if (video.duration && video.currentTime >= video.duration * JUMP_AT) {
         video.pause();
-        sessionStorage.setItem(INTRO_KEY, "1");
         setPhase("complete");
       }
     };

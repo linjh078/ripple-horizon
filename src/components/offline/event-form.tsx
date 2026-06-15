@@ -50,13 +50,19 @@ export function OfflineEventForm() {
     }
   }
 
+  function handleTriggerClick() {
+    if (!session?.user) {
+      router.push("/login");
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { if (!session?.user) { router.push("/login"); return; } setOpen(v); }}>
       <DialogTrigger
         render={
-          <Button>
+          <Button onClick={handleTriggerClick}>
             <Plus className="size-4" />
-            <span className="ml-1.5">发布活动</span>
+            <span className="ml-1.5">{session?.user ? "发布活动" : "登录后发布活动"}</span>
           </Button>
         }
       />
