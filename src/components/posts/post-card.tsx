@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CategoryBadge } from "@/components/posts/category-badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Heart, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 interface PostCardProps {
   post: {
@@ -10,7 +10,6 @@ interface PostCardProps {
     title: string;
     content: string;
     category: string;
-    likeCount: number;
     createdAt: Date;
     author: {
       id: string;
@@ -56,16 +55,10 @@ export function PostCard({ post }: PostCardProps) {
               </Avatar>
               <span>{post.author.name}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <Heart className="size-3" />
-                {post.likeCount}
-              </span>
-              <span className="flex items-center gap-1">
-                <MessageCircle className="size-3" />
-                {post._count?.comments ?? 0}
-              </span>
-            </div>
+            <span className="flex items-center gap-1">
+              <MessageCircle className="size-3" />
+              {post._count?.comments ?? 0}
+            </span>
           </div>
         </CardContent>
       </Card>

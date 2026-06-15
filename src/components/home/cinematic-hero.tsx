@@ -174,7 +174,14 @@ export function CinematicHero() {
               <p className="text-sm text-muted-foreground">微信号</p>
               <p className="text-xl font-bold tracking-wider">13714249330</p>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <div className="mt-3 flex justify-center">
+              <img
+                src="/cxk.webp"
+                alt="联系作者"
+                className="w-32 h-32 object-cover rounded-xl border shadow-sm"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">
               添加时请备注"观澜知远"，感谢支持！
             </p>
           </DialogContent>

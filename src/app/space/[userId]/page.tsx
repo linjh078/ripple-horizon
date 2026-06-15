@@ -33,7 +33,7 @@ export default async function SpacePage({
       posts: {
         take: 5,
         orderBy: { createdAt: "desc" },
-        select: { id: true, title: true, category: true, createdAt: true, likeCount: true },
+        select: { id: true, title: true, category: true, createdAt: true },
       },
       _count: { select: { posts: true } },
     },
@@ -127,8 +127,7 @@ export default async function SpacePage({
               >
                 <h3 className="font-medium">{post.title}</h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {new Date(post.createdAt).toLocaleDateString("zh-CN")} ·{" "}
-                  {post.likeCount} 赞
+                  {new Date(post.createdAt).toLocaleDateString("zh-CN")}
                 </p>
               </a>
             ))}

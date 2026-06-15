@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Shield } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "首页" },
@@ -31,6 +31,8 @@ export function LocalNav() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
+  const role = (session?.user as { role?: string })?.role;
+  const isAdmin = role === "ADMIN";
 
   return (
     <motion.header
@@ -60,6 +62,15 @@ export function LocalNav() {
               {link.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="px-3 py-1.5 text-sm font-medium text-white/85 hover:text-white transition-colors rounded-full hover:bg-white/[0.08] flex items-center gap-1"
+            >
+              <Shield className="size-3" />
+              管理
+            </Link>
+          )}
         </nav>
 
         {/* 右侧用户区 */}

@@ -34,8 +34,9 @@ export function PositionCard({ position, currentUserId }: { position: PositionDa
   const { data: session } = useSession();
   const role = (session?.user as { role?: string })?.role;
   const isCreator = currentUserId ? currentUserId === position.creatorId : false;
-  const canEdit = role === "HR" || isCreator;
-  const canDelete = role === "HR" || role === "ADMIN" || isCreator;
+  // 管理员 / HR / 发布者本人 均可编辑和删除
+  const canEdit = role === "ADMIN" || role === "HR" || isCreator;
+  const canDelete = role === "ADMIN" || role === "HR" || isCreator;
   const [editing, setEditing] = useState(false);
 
   async function handleEdit(formData: FormData) {

@@ -2,19 +2,12 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 /**
- * 权限检查工具
+ * 权限检查工具 v2
  *
- * 通用规则：
- * - 删除：发布者本人 或 管理员
- * - 修改：仅发布者本人（管理员不能修改他人内容）
- *
- * 职位特殊规则：
- * - 发布/删除：HR 或 管理员
- * - 修改：仅 HR（管理员不能修改职位）
- *
- * 企业特殊规则：
- * - 创建/删除：HR 或 管理员
- * - 修改：仅创建者本人
+ * 核心规则：
+ * - 管理员（ADMIN）：完全控制，可修改/删除任何内容
+ * - 企业 HR：可管理职位和企业，可修改/删除自己的内容
+ * - 在校生/教师/校友：仅可修改/删除自己的内容
  */
 
 type RoleResult = { role: string | null; userId: string | null };
@@ -41,38 +34,37 @@ export async function isHR(): Promise<boolean> {
   return role === "HR";
 }
 
-/** 检查是否可以删除（发布者本人 或 管理员） */
-export async function canDelete(authorId: string): Promise<boolean> {
+/** 检查是否可以修改（管理员 或 发布者本人） */
+export async function canEdit(authorId: string): Promise<boolean> {
   const { role, userId } = await getUserRole();
   if (!userId) return false;
-  if (userId === authorId) return true;
-  return role === "ADMIN";
-}
-
-/** 检查是否可以修改（仅发布者本人，管理员不能改） */
-export async function canEdit(authorId: string): Promise<boolean> {
-  const { userId } = await getUserRole();
-  if (!userId) return false;
+  if (role === "ADMIN") return true;
   return userId === authorId;
 }
 
-/** 检查是否可以管理职位（HR 或 管理员） */
+/** 检查是否可以删除（管理员 或 发布者本人） */
+export async function canDelete(authorId: string): Promise<boolean> {
+  const { role, userId } = await getUserRole();
+  if (!userId) return false;
+  if (role === "ADMIN") return true;
+  return userId === authorId;
+}
+
+/** 检查是否可以管理职位（管理员 或 HR） */
 export async function canManagePositions(): Promise<boolean> {
   const { role, userId } = await getUserRole();
   if (!userId) return false;
-  return role === "HR" || role === "ADMIN";
+  return role === "ADMIN" || role === "HR";
 }
 
-/** 检查是否可以修改职位（仅 HR，管理员不能改） */
+/** 检查是否可以管理职位（管理员 或 HR） — 创建/编辑/删除 */
 export async function canEditPosition(): Promise<boolean> {
-  const { role, userId } = await getUserRole();
-  if (!userId) return false;
-  return role === "HR";
+  return canManagePositions();
 }
 
-/** 检查是否可以管理企业（HR 或 管理员） */
+/** 检查是否可以管理企业（管理员 或 HR） */
 export async function canManageCompanies(): Promise<boolean> {
   const { role, userId } = await getUserRole();
   if (!userId) return false;
-  return role === "HR" || role === "ADMIN";
+  return role === "ADMIN" || role === "HR";
 }

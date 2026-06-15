@@ -34,7 +34,6 @@ model User {
 
   posts          Post[]
   comments       Comment[]
-  likes          Like[]
   lifeEvents     LifeEvent[]
   submittedSpots LifeSpot[]
   offlineEvents  OfflineEvent[]
@@ -86,8 +85,6 @@ model Post {
   authorId  String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments  Comment[]
-  likes     Like[]
-  likeCount Int      @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -107,22 +104,6 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-// ============================================================================
-// 点赞
-// ============================================================================
-
-model Like {
-  id     String @id @default(uuid())
-  postId String
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@unique([postId, userId])
 }
 
 // ============================================================================

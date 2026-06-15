@@ -52,7 +52,7 @@ export default async function ExamsPage({ searchParams }: { searchParams: Promis
                 <CardHeader className="pb-2"><CardTitle className="text-lg">{p.title}</CardTitle></CardHeader>
                 <CardContent className="pb-2">
                   <p className="text-sm text-muted-foreground line-clamp-3">{p.content}</p>
-                  <p className="text-xs text-muted-foreground mt-2">{p.author.name} · {p._count.comments} 评论 · {p.likeCount} 赞</p>
+                  <p className="text-xs text-muted-foreground mt-2">{p.author.name} · {p._count.comments} 评论</p>
                 </CardContent>
               </Link>
               <div className="px-6 pb-4 pt-0">

@@ -11,13 +11,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Home, Compass, Coffee, User, LogOut, LogIn, UserPlus, Building2 } from "lucide-react";
+import { Home, Compass, Coffee, User, LogOut, LogIn, UserPlus, Building2, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
+  const role = (session?.user as { role?: string })?.role;
+  const isAdmin = role === "ADMIN";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -61,6 +63,15 @@ export function Navbar() {
             <Coffee className="size-4" />
             <span className="ml-1.5">生活</span>
           </Link>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+            >
+              <Shield className="size-4" />
+              <span className="ml-1.5">管理</span>
+            </Link>
+          )}
         </nav>
 
         {/* 右侧用户区 */}

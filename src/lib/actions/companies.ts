@@ -114,7 +114,6 @@ export async function createPosition(formData: FormData) {
 export async function deletePosition(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "请先登录" };
-  if (!(await canManagePositions())) return { error: "仅 HR 和管理员可以删除职位" };
 
   const id = formData.get("id") as string;
   const companyId = formData.get("companyId") as string;
@@ -123,6 +122,12 @@ export async function deletePosition(formData: FormData) {
   try {
     const position = await prisma.position.findUnique({ where: { id } });
     if (!position) return { error: "职位不存在" };
+
+    // 创建者本人 / HR / 管理员 均可删除
+    const isCreator = position.creatorId === session.user.id;
+    if (!isCreator && !(await canManagePositions())) {
+      return { error: "仅职位发布者、HR 或管理员可以删除职位" };
+    }
 
     await prisma.position.delete({ where: { id } });
     if (companyId) revalidatePath(`/companies/${companyId}`);

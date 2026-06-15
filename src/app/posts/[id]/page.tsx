@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CategoryBadge } from "@/components/posts/category-badge";
-import { LikeButton } from "@/components/likes/like-button";
 import { CommentSection } from "@/components/comments/comment-section";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -93,10 +92,9 @@ export default async function PostDetailPage({
         </div>
       )}
 
-      {/* 评级 + 点赞 */}
+      {/* 评级 */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <RatingBar targetId={post.id} targetType="post" />
-        <LikeButton postId={post.id} initialCount={post.likeCount} />
       </div>
 
       <Separator className="mb-8" />
